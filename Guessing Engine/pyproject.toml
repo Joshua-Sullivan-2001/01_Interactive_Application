@@ -14,6 +14,9 @@ dependencies = []
 test = ["pytest>=8.0"]
 rich = ["rich>=13.7"]
 
+[tool.setuptools]
+packages = []
+
 [tool.pytest.ini_options]
 testpaths = ["Tests"]
 python_files = ["test*.py"]

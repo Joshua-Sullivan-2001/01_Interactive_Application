@@ -81,4 +81,4 @@ Tests will cover validator edge cases; both sorting algorithms on empty, single-
 
 ## Assignment Submission
 
-The brief requests a working Python application in the `01_Interactive_Application` submission folder packaged with all required files. Supporting documentation should include application screenshots, explained code snippets, design or pseudocode, development reflection, and references. A separate reflective learning summary is also required. This repository covers the interactive application portion.
+The brief requests a working Python application in the `01_Interactive_Application` submission folder packaged with all required files. Supporting documentation should include application screenshots, explained code snippets, design or pseudocode, development reflection and references. A separate reflective learning summary is also required. This repository covers the interactive application portion.

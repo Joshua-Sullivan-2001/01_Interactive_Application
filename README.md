@@ -45,11 +45,11 @@ Guessing Engine/
 |   `-- validator.py
 |-- Data/
 `-- Tests/
-	|-- test bot.py
-	|-- test leaderboard.py
-	|-- test sorting.py
-	|-- test storage.py
-	`-- test validator.py
+	|-- test_bot.py
+	|-- test_leaderboard.py
+	|-- test_sorting.py
+	|-- test_storage.py
+	`-- test_validator.py
 ```
 
 `main.py` is intended to be the entry point. The `Engine Code/` modules follow the responsibilities above. Tests are grouped by the module they cover. Runtime history and log files will be stored in `Data/` when storage is implemented.

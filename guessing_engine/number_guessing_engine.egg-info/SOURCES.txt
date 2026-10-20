@@ -1,12 +1,24 @@
 README.md
 pyproject.toml
+engine/__init__.py
+engine/bot.py
+engine/config.py
+engine/display.py
+engine/game.py
+engine/leaderboard.py
+engine/simulation.py
+engine/sorting.py
+engine/storage.py
+engine/validator.py
 number_guessing_engine.egg-info/PKG-INFO
 number_guessing_engine.egg-info/SOURCES.txt
 number_guessing_engine.egg-info/dependency_links.txt
 number_guessing_engine.egg-info/requires.txt
 number_guessing_engine.egg-info/top_level.txt
-tests/test bot.py
-tests/test leaderboard.py
-tests/test sorting.py
-tests/test storage.py
-tests/test validator.py
+tests/test_bot.py
+tests/test_config.py
+tests/test_game.py
+tests/test_leaderboard.py
+tests/test_sorting.py
+tests/test_storage.py
+tests/test_validator.py

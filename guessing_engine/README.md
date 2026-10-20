@@ -27,12 +27,12 @@ This repository currently contains the project scaffold. The Python modules and 
 ## Project Layout
 
 ```text
-Guessing Engine/
+guessing_engine/
 |-- main.py
 |-- config.json
 |-- pyproject.toml
 |-- README.md
-|-- Engine Code/
+|-- engine/
 |   |-- bot.py
 |   |-- config.py
 |   |-- display.py
@@ -43,8 +43,8 @@ Guessing Engine/
 |   |-- start.py
 |   |-- storage.py
 |   `-- validator.py
-|-- Data/
-`-- Tests/
+|-- data/
+`-- tests/
 	|-- test_bot.py
 	|-- test_leaderboard.py
 	|-- test_sorting.py
@@ -52,7 +52,7 @@ Guessing Engine/
 	`-- test_validator.py
 ```
 
-`main.py` is intended to be the entry point. The `Engine Code/` modules follow the responsibilities above. Tests are grouped by the module they cover. Runtime history and log files will be stored in `Data/` when storage is implemented.
+`main.py` is intended to be the entry point. The `engine/` modules follow the responsibilities above. Tests are grouped by the module they cover. Runtime history and log files will be stored in `data/` when storage is implemented.
 
 ## Setup and Commands
 

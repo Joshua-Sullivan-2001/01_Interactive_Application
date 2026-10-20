@@ -15,10 +15,10 @@ test = ["pytest>=8.0"]
 rich = ["rich>=13.7"]
 
 [tool.setuptools]
-packages = []
+packages = ["engine"]
 
 [tool.pytest.ini_options]
-testpaths = ["Tests"]
+testpaths = ["tests"]
 python_files = ["test*.py"]
-pythonpath = [".", "Engine Code"]
+pythonpath = ["."]
 addopts = "-ra"

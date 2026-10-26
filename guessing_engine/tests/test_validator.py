@@ -1,0 +1,1 @@
+# test_validator.py: tests the input validation logic for the game.

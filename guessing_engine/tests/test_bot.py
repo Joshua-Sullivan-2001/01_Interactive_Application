@@ -1,0 +1,1 @@
+# test_bot.py: tests the bot's guessing logic and strategy.

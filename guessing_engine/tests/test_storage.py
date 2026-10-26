@@ -1,0 +1,1 @@
+# test_storage.py: tests the storage functionality for saving and loading game data.

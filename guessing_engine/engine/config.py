@@ -1,0 +1,1 @@
+# config.py: stores configuration values for the game.

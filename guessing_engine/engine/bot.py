@@ -1,0 +1,1 @@
+# bot.py: manages the bot's guessing logic and strategy.

@@ -1,0 +1,1 @@
+# validator.py: checks that typed text is a whole number from 1 to 100.

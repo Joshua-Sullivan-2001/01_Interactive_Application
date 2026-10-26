@@ -6,7 +6,7 @@ Design and Implement an Interactive Application
 
 ## Project Overview
 
-The Number Guessing Engine is a Python terminal game developed for the CLASS-1a interactive application brief. In the core game the computer chooses a random whole number from 1 to 100. The player enters guesses and receives a higher or lower hint until the number is guessed. Invalid input should be reported clearly without crashing the game or using a turn.
+The Number Guessing Engine is a Python terminal game developed for the CLASS-1a interactive application brief. In the core game the computer chooses a random whole number from 1 to 100. The player enters guesses and receives a higher or lower hint until the number is guessed. Invalid player input should be reported clearly without crashing the game or using a turn.
 
 The project is designed to demonstrate input validation, control flow, classes, data structures and a manually implemented sorting algorithm. Human scores are kept for the current session and displayed in ascending order before exit. The design also plans for saved score history and optional bot and simulation modes.
 
@@ -40,7 +40,7 @@ guessing_engine/
 |   |-- leaderboard.py
 |   |-- simulation.py
 |   |-- sorting.py
-|   |-- start.py
+|   |-- __init__.py
 |   |-- storage.py
 |   `-- validator.py
 |-- data/
@@ -52,28 +52,7 @@ guessing_engine/
 	`-- test_validator.py
 ```
 
-`main.py` is intended to be the entry point. The `engine/` modules follow the responsibilities above. Tests are grouped by the module they cover. Runtime history and log files will be stored in `Data/` when storage is implemented.
-
-## Setup and Commands
-
-Python 3.10 or newer is required. The core game is intended to use only the Python standard library. Install the optional test or Rich dependencies from the project directory when needed:
-
-```powershell
-python -m pip install -e ".[test]"
-python -m pip install -e ".[rich]"
-```
-
-When the entry point and game are implemented, start the application from this directory with:
-
-```powershell
-python main.py
-```
-
-Run the test suite with:
-
-```powershell
-python -m pytest
-```
+`main.py` is intended to be the entry point. The `engine/` modules follow the responsibilities above. Tests are grouped by the module they cover. Runtime history and log files will be stored in `data/` when storage is implemented.
 
 ## Planned Tests and Experiments
 

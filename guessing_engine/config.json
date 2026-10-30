@@ -1,0 +1,9 @@
+{
+    "use_rich": false,
+    "bot_mode": false,
+    "simulation": false,
+    "leaderboard_sort": "insertion",
+    "history_path": "data/history.json",
+    "log_path": "data/game.log",
+    "attempt_limit": null
+}

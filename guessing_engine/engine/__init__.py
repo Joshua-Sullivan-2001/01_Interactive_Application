@@ -1,1 +1,1 @@
-# __init__.py: initializes the guessing engine package.
+# __init__.py: marks the engine directory as a Python package. This file can be empty, but it must be present for Python to recognize the directory as a package.

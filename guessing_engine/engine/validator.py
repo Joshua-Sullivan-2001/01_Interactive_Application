@@ -43,6 +43,9 @@ def validate_Guess(input_text):
 
     if len(cleaned_input) > max_input_length: # Check if the input is too long.
         return output_Error(message_too_long) # Return an error message for input that exceeds the maximum length.
+    
+    if "." in cleaned_input: # Check if the text contains a decimal point.
+        return output_Error(no_decimal_numbers_message) # Return an error message for decimal input.
 
     try:
         value = int(cleaned_input) # Attempt to convert the input to an integer.
@@ -51,9 +54,6 @@ def validate_Guess(input_text):
 
     if value < 0: # Check if the input is negative.
         return output_Error(no_negative_numbers_message) # Return an error message for negative input.
-
-    if value != float(value): # Check if the input is a decimal number.
-        return output_Error(no_decimal_numbers_message) # Return an error message for decimal input.
 
     if value < min_value or value > max_value: # Check if the input is out of range.
         return output_Error(out_of_range_message) # Return an error message for input that is out of the valid range.

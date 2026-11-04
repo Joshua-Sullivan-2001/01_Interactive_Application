@@ -6,7 +6,7 @@ from engine.validator import validate_Guess # Import the validate_Guess function
 
 def test_validate_Guess():
     """ A function to test the validate_Guess function with various input cases. """
-    
+
     # Test valid input
     result = validate_Guess("50") # Test the function with a valid input string representing a whole number within the valid range.
     assert result.ok == True, "Valid input should return ok=True" # Assert that the result indicates the input is valid.
@@ -26,7 +26,7 @@ def test_validate_Guess():
     assert result.message == "Input is empty.", "Empty string should return the correct error message" # Assert that the result contains the correct error message for an empty string.
 
     # Test too long input
-    long_input = "1" * 11  # 11 characters long 
+    long_input = "1" * 11  # 11 characters long
     result = validate_Guess(long_input) # Test the function with an input string that exceeds the maximum allowed length to check how it handles overly long input.
     assert result.ok == False, "Too long input should return ok=False" # Assert that the result indicates the input is invalid for an overly long string.
     assert result.value is None, "Too long input should not return a value" # Assert that the result does not contain a value for an overly long string.
@@ -49,4 +49,3 @@ def test_validate_Guess():
     assert result.ok == False, "Out of range should return ok=False" # Assert that the result indicates the input is invalid for a number below the valid range.
     assert result.value is None, "Out of range should not return a value" # Assert that the result does not contain a value for a number below the valid range.
     assert result.message == "Input is out of range. Please enter a whole number between 1 and 100.", "Out of range should return the correct error message"  # Assert that the result contains the correct error message for a number below the valid range.
-    

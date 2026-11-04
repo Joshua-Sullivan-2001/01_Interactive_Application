@@ -20,19 +20,19 @@ class validationResult:
 
     def __init__(self, ok, value, message):
         """ A function to create a validationResult object with the specified parameters."""
-        
+
         self.ok = ok # A boolean indicating whether the input is valid.
         self.value = value # The value of the input if valid.
         self.message = message # An error message if the input is invalid.
 
 def output_Error(message):
     """ A function to create a validationResult object for an invalid input with the specified error message. """
-    
+
     return validationResult(False, None, message) # Return a validationResult object indicating invalid input.
 
 def validate_Guess(input_text):
     """A function to validate the user's guess input ensuring it is a whole number between 1 and 100."""
-    
+
     if type(input_text) is not str: # Check if the input is not a string.
         return output_Error(not_a_text_message) # Return an error message for non-string input.
 
@@ -43,7 +43,7 @@ def validate_Guess(input_text):
 
     if len(cleaned_input) > max_input_length: # Check if the input is too long.
         return output_Error(message_too_long) # Return an error message for input that exceeds the maximum length.
-    
+
     if "." in cleaned_input: # Check if the text contains a decimal point.
         return output_Error(no_decimal_numbers_message) # Return an error message for decimal input.
 

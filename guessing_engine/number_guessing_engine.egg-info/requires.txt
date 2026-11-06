@@ -1,6 +1,0 @@
-
-[rich]
-rich>=13.7
-
-[test]
-pytest>=8.0

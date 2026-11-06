@@ -3,10 +3,8 @@
 # constants for display for easy modification
 
 guess_prompt = "Please enter your guess (a whole number between 1 and 100): " # Prompt for the user to enter their guess.
-menu_prompt = "Please select an option:\n1. Play the game\n2. View the rules\n3. Exit\nEnter your choice (1, 2, or 3): " # Prompt for the user to select a menu option.
-initials_prompt = "Please enter your initials (up to 3 characters): " # Prompt for the user to enter their initials.
-too_high_message = "Your guess is too high. Try again." # Message for when the user's guess is too high.
-too_low_message = "Your guess is too low. Try again." # Message for when the user's guess is too low.
+menu_prompt = "Please enter your choice (1 to 7): " # Prompt for the user to select a menu option.
+initials_prompt = "Please enter your initials (up to 3 letters): " # Prompt for the user to enter their initials.
 win_message = "Congratulations! You've guessed the correct number in {turns} turns!" # Message for when the user guesses the correct number.
 thank_you_message = "Thank you for playing! Goodbye!" # Message to thank the user for playing the game.
 empty_leaderboard_message = "The leaderboard is currently empty. Be the first to set a record!" # Message for when the leaderboard is empty.
@@ -42,7 +40,7 @@ class display:
         """Displays a thank you message to the user."""
         pass # will use child class
 
-    def show_leaderboard(self, leaderboard): # Displays the leaderboard with the given records.
+    def show_leaderboard(self, leaderboard, title): # Displays the leaderboard with the given records.
         """Displays the leaderboard with the given records."""
         pass # will use child class
 
@@ -94,10 +92,10 @@ class basicDisplay(display):
 
         print(thank_you_message) # Print the thank you message to the console.
 
-    def show_leaderboard(self, leaderboard): # Displays the leaderboard with the given records.
+    def show_leaderboard(self, leaderboard, title): # Displays the leaderboard with the given records.
         """Displays the leaderboard with the given records."""
 
-        print(f"--- Leaderboard ---") # Print a header for the leaderboard.
+        print(f"--- {title} ---") # Print a header for the leaderboard.
         if len(leaderboard) == 0: # Check if the leaderboard is empty.
             print(empty_leaderboard_message) # Print a message indicating that the leaderboard is empty.
             return # Exit the method if the leaderboard is empty.
@@ -113,17 +111,17 @@ class basicDisplay(display):
     def get_guess(self): # Prompts the user to enter their guess and returns it.
         """Prompts the user to enter their guess and returns it."""
 
-        return input(guess_prompt) # Prompt the user for their guess and return the input.
+        return self.ask(guess_prompt) # Prompt the user for their guess using the ask method and return the input.
 
     def get_menu_choice(self): # Prompts the user to select a menu option and returns their choice.
         """Prompts the user to select a menu option and returns their choice."""
 
-        return input(menu_prompt) # Prompt the user for their menu choice and return the input.
+        return self.ask(menu_prompt) # Prompt the user for their menu choice using the ask method and return the input.
 
     def get_initials(self): # Prompts the user to enter their initials and returns them.
         """Prompts the user to enter their initials and returns them."""
 
-        return input(initials_prompt) # Prompt the user for their initials and return the input.
+        return self.ask(initials_prompt) # Prompt the user for their initials using the ask method and return the input.
 
     def ask(self, prompt):
         """Prompts the user with the given prompt and returns their input. Handles EOFError and KeyboardInterrupt exceptions."""

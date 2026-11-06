@@ -45,11 +45,11 @@ guessing_engine/
 |   `-- validator.py
 |-- data/
 `-- tests/
-	|-- test_bot.py
-	|-- test_leaderboard.py
-	|-- test_sorting.py
-	|-- test_storage.py
-	`-- test_validator.py
+ |-- test_bot.py
+ |-- test_leaderboard.py
+ |-- test_sorting.py
+ |-- test_storage.py
+ `-- test_validator.py
 ```
 
 `main.py` is intended to be the entry point. The `engine/` modules follow the responsibilities above. Tests are grouped by the module they cover. Runtime history and log files will be stored in `data/` when storage is implemented.
@@ -61,3 +61,15 @@ Tests will cover validator edge cases; both sorting algorithms on empty, single-
 ## Assignment Submission
 
 The brief requests a working Python application in the `01_Interactive_Application` submission folder packaged with all required files. Supporting documentation should include application screenshots, explained code snippets, design or pseudocode, development reflection and references. A separate reflective learning summary is also required. This repository covers the interactive application portion.
+
+## Install
+
+Python 3.10 or newer is needed. Optional extras are installed with: pip install rich pytest
+
+## Run
+
+python main.py
+
+## Tests
+
+python -m pytest

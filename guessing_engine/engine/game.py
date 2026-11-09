@@ -2,7 +2,7 @@
 
 import random # Import the random module to generate a secret number.
 
-from engine.validator import min_value, max_value, validate_guess # Import the number range and the validator function from the validator module.
+from guessing_engine.engine.validator import min_value, max_value, validate_guess # Import the number range and the validator function from the validator module.
 
 # constants for the game
 too_low = "Too low!" # Message for a guess that is too low.

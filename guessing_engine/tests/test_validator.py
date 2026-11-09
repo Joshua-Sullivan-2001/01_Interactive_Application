@@ -2,7 +2,7 @@
 
 from pathlib import Path # Import the Path class from the pathlib module to handle file paths.
 
-from engine.validator import validate_guess, max_input_length # Import the validate_Guess function from the validator module.
+from guessing_engine.engine.validator import validate_guess, max_input_length # Import the validate_Guess function from the validator module.
 
 def test_validate_guess():
     """ A function to test the validate_Guess function with various input cases. """

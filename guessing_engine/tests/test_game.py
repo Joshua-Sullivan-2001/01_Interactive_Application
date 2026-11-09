@@ -1,7 +1,7 @@
 # test_game.py: tests the game logic and flow.
 
-from engine.display import display # Import the display base class that the fake display will copy.
-from engine.game import game, too_low, too_high, correct # Import the game class and the constants from the game module.
+from guessing_engine.engine.display import display # Import the display base class that the fake display will copy.
+from guessing_engine.engine.game import game, too_low, too_high, correct # Import the game class and the constants from the game module.
 
 class fakeDisplay(display): # A pretend display that gives scripted answers and remembers what it was asked to show.
     """A fake display for testing the game logic. It takes a list of answers to give when asked for a guess, and remembers any messages it was asked to show."""
@@ -42,7 +42,7 @@ class fakeDisplay(display): # A pretend display that gives scripted answers and 
         
         self.messages.append(message) # Append the message to the messages list.
 
-class Test_Game: # The name must start with Test so pytest finds it.
+class Test_Game: # The name must start with test so pytest finds it.
     """Tests for the game class."""
     
     def test_low_guess(self):

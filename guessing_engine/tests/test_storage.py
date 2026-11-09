@@ -4,7 +4,7 @@ import os # Import the os module to interact with the operating system, such as 
 import json # Import the json module to handle reading and writing JSON data for storing player data and leaderboard information.
 from guessing_engine.engine.storage import Storage # Import the Storage class from the storage module
 
-class test_storage:
+class Test_storage:
     
     """A test class to validate the functionality of the Storage class including loading, saving and clearing player data as well as converting data to a raw text format."""
 
@@ -129,7 +129,7 @@ class test_storage:
         
         """Test that saving invalid data raises an appropriate exception."""
         
-        invalid_data = "This is not a valid list" # Define invalid data that is not a list of scores.
+        invalid_data = "This is not a valid list" # Define invalid data that is not a list of data.
         try: # Attempt to save the invalid data to the leaderboard file.
             self.storage.save_leaderboard_data(invalid_data) # Save the invalid data to the leaderboard file.
             assert False, "Saving invalid data should raise a TypeError." # If no exception is raised, assert False to indicate the test failed.
@@ -181,7 +181,7 @@ class test_storage:
         
         """Test converting data with large numbers to a raw text format."""
         
-        large_turns = [{"name": "Alice", "turns taken": 1000000}, {"name": "Bob", "turns taken": 2000000}] # Define a list of test data with large score values.
+        large_turns = [{"name": "Alice", "turns taken": 1000000}, {"name": "Bob", "turns taken": 2000000}] # Define a list of test data with large turns taken values.
         raw_text = self.storage.convert_to_raw_text(large_turns) # Convert the test data with large numbers to a raw text format.
         expected_text = "Alice: 1000000\nBob: 2000000" # Define the expected raw text output for the test data with large numbers.
         assert raw_text == expected_text, "Raw text conversion should correctly handle large numbers." # Assert that the converted raw text matches the expected output format, confirming that large numbers are handled correctly.
@@ -231,7 +231,7 @@ class test_storage:
         expected_text = "Al!ce: 10\nBøb: 20" # Define the expected raw text output for the test data with special and Unicode characters.
         assert raw_text == expected_text, "Raw text conversion should correctly handle both special and Unicode characters in player names." # Assert that the converted raw text matches the expected output format, confirming that both special and Unicode characters in player names are handled correctly.
     
-    def test_convert_to_raw_text_large_scores(self): # Define a test method to validate converting data with large turns taken values to a raw text format.
+    def test_convert_to_raw_text_large_turns_taken_values(self): # Define a test method to validate converting data with large turns taken values to a raw text format.
         
         """Test converting data with large turns taken values to a raw text format."""
         
@@ -249,7 +249,7 @@ class test_storage:
         expected_text = "Alice: 10\nBøb: 5\n: 0" # Define the expected raw text output for the test data with mixed values and names.
         assert raw_text == expected_text, "Raw text conversion should correctly handle mixed turns taken values and player names." # Assert that the converted raw text matches the expected output format, confirming that mixed turns taken values and player names are handled correctly.
     
-    def test_convert_to_raw_text_special_characters_in_data(self): # Define a test method to validate converting data with special characters in score values to a raw text format.
+    def test_convert_to_raw_text_special_characters_in_data(self): # Define a test method to validate converting data with special characters in turns taken values to a raw text format.
         
         """Test converting data with special characters in turns taken values to a raw text format."""
         
@@ -294,7 +294,7 @@ class test_storage:
         expected_text = "A: 10\nBob: -5\nCharlie: 0" # Define the expected raw text output for the test data with mixed name lengths and turns taken values.
         assert raw_text == expected_text, "Raw text conversion should correctly handle mixed name lengths and turns taken values." # Assert that the converted raw text matches the expected output format, confirming that mixed name lengths and turns taken values are handled correctly.
     
-    def test_convert_to_raw_text_special_characters_in_names_and_scores(self): # Define a test method to validate converting data with special characters in both player names and turns taken values to a raw text format.
+    def test_convert_to_raw_text_special_characters_in_names_and_turns_taken(self): # Define a test method to validate converting data with special characters in both player names and turns taken values to a raw text format.
         """Test converting data with special characters in both player names and turns taken values to a raw text format."""
         
         special_char_name_data_values = [{"name": "Al!ce", "turns taken": 10}, {"name": "B@b", "turns taken": -20}] # Define a list of test data with special characters in both player names and turns taken values.

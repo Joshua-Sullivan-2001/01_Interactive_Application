@@ -23,12 +23,15 @@ class Storage: # Define the Storage class to encapsulate methods for managing pl
             with open(self.filename, "r") as file: # Open the leaderboard JSON file in read mode.
                 return json.load(file) # Load and return the player turns taken from the JSON file.
             
-    def save_leaderboard_data(self, scores): # Define the method to save player turns taken to the JSON file.
+    def save_leaderboard_data(self, data): # Define the method to save player turns taken to the JSON file.
         
         """Saves the player initials and turns taken to the JSON file. It overwrites any existing data in the file."""
         
-        with open(self.filename, "w") as file: # Open the leaderboard JSON file in write mode.
-            json.dump(scores, file) # Write the provided player initials and turns taken to the JSON file in JSON format.
+        if not isinstance(data, list): # Check if the provided data is not a list.
+            raise ValueError("Data must be a list.") # Raise a ValueError if the data is not a list indicating that the data format is incorrect.
+        else: # If the data is a list proceed to write it to the JSON file.
+            with open(self.filename, "w") as file: # Open the leaderboard JSON file in write mode.
+                json.dump(data, file) # Write the provided player initials and turns taken to the JSON file in JSON format.
     
     # Utility methods for managing the leaderboard data.
     
@@ -39,8 +42,8 @@ class Storage: # Define the Storage class to encapsulate methods for managing pl
         with open(self.filename, "w") as file: # Open the leaderboard JSON file in write mode.
             json.dump([], file) # Write an empty list to the JSON file clearing all data.
     
-    def convert_to_raw_text(self, scores): # Define the method to convert the list of player data into a raw text format for display.
+    def convert_to_raw_text(self, data): # Define the method to convert the list of player data into a raw text format for display.
         
         """Converts the list of player data into a raw text format for display purposes."""
         
-        return "\n".join([f"{score['name']}: {score['score']}" for score in scores]) # Join each player's name and turns taken into a single string separated by newlines.
+        return "\n".join([f"{data['name']}: {data['turns taken']}" for data in data]) # Join each player's name and turns taken into a single string separated by newlines.

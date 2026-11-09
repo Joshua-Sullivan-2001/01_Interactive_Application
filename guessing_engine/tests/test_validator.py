@@ -1,6 +1,5 @@
 # test_validator.py: tests the input validation logic for the game.
 
-from pathlib import Path # Import the Path class from the pathlib module to handle file paths.
 
 from guessing_engine.engine.validator import validate_guess, max_input_length # Import the validate_Guess function from the validator module.
 

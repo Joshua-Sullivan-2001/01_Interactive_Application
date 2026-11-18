@@ -12,10 +12,11 @@ class Storage: # Define the Storage class to encapsulate methods for managing pl
         """Start the Storage class with a filename for the leaderboard JSON file. If no filename is provided, it defaults to 'leaderboard.json'."""
         
         self.filename = filename # Store the provided filename as an instance variable for later use in reading and writing data.
+        # ToDo: Add file path later to ensure all data is stored in "guessing_engine/engine/data" folder
 
-    def load_leaderboard_data(self): # Define the method to load player turns taken from the JSON file.
+    def loadLeaderboardData(self): # Define the method to load player turns taken from the JSON file.
         
-        """Loads the player turns taken from the JSON file. If the file does not exist, it returns an empty list."""
+        """Loads the player turns taken from the JSON file. If the file does not exist it returns an empty list."""
         
         if not os.path.exists(self.filename): # Check if the leaderboard JSON file exists.
             return [] # If the file does not exist return an empty list indicating no turns taken are available.
@@ -23,7 +24,7 @@ class Storage: # Define the Storage class to encapsulate methods for managing pl
             with open(self.filename, "r") as file: # Open the leaderboard JSON file in read mode.
                 return json.load(file) # Load and return the player turns taken from the JSON file.
             
-    def save_leaderboard_data(self, data): # Define the method to save player turns taken to the JSON file.
+    def saveLeaderboardData(self, data): # Define the method to save player turns taken to the JSON file.
         
         """Saves the player initials and turns taken to the JSON file. It overwrites any existing data in the file."""
         
@@ -35,14 +36,14 @@ class Storage: # Define the Storage class to encapsulate methods for managing pl
     
     # Utility methods for managing the leaderboard data.
     
-    def clear_leaderboard_data(self): # Define the method to clear all player data from the JSON file.
+    def clearLeaderboardData(self): # Define the method to clear all player data from the JSON file.
         
         """Clears all player data from the JSON file by overwriting it with an empty list."""
         
         with open(self.filename, "w") as file: # Open the leaderboard JSON file in write mode.
             json.dump([], file) # Write an empty list to the JSON file clearing all data.
     
-    def convert_to_raw_text(self, data): # Define the method to convert the list of player data into a raw text format for display.
+    def convertToRawText(self, data): # Define the method to convert the list of player data into a raw text format for display.
         
         """Converts the list of player data into a raw text format for display purposes."""
         

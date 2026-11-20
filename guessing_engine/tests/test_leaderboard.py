@@ -1,1 +1,1 @@
-# test_leaderboard.py: tests the leaderboard functionality and score management.
+# test_leaderboard.py: tests the leaderboard functionality and score management

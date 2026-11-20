@@ -1,1 +1,1 @@
-# test_config.py: tests the configuration values for the game.
+# test_config.py: tests the configuration values for the game

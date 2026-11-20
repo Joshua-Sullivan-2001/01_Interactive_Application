@@ -1,1 +1,1 @@
-# test_sorting.py: tests the sorting functionality for the leaderboard and other components.
+# test_sorting.py: tests the sorting functionality for the leaderboard and other components

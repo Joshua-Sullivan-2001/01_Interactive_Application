@@ -166,6 +166,8 @@ def createDisplay(displayType): # Creates a display object based on the specifie
     
     if displayType == "basic": # Check if the specified display type is "basic"
         return basicDisplay() # Return an instance of the basicDisplay class
+    elif displayType == "rich": # Check if the specified display type is "rich"
+        return basicDisplay() # Return an instance of the basicDisplay class (as a placeholder for RichDisplay if implemented)
     # elif displayType == "rich": # Check if the specified display type is "rich"
     #     return RichDisplay() # Return an instance of the RichDisplay class (if implemented
     else: # If the specified display type is not recognized

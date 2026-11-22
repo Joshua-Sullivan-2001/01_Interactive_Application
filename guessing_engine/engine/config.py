@@ -8,8 +8,8 @@ defaults = { # Define the default configuration settings for the game
     "bot_mode": False, # A boolean indicating whether the game is in bot mode (True) or human mode (False)
     "simulation": False, # A boolean indicating whether the game is running in simulation mode (True) or normal mode (False)
     "leaderboard_sort": "insertion", # A string indicating the sorting algorithm to use for the leaderboard (default is "insertion")
-    "history_path": "data/history.json", # A string indicating the file path for storing the game history in JSON format
-    "log_path": "data/game.log", # A string indicating the file path for storing the game log in text format
+    "history_storage": "data/history.json", # A string indicating the file path for storing the game history in JSON format
+    "log_storage": "data/game.log", # A string indicating the file path for storing the game log in text format
     "attempt_limit": None, # An integer indicating the maximum number of attempts allowed for a player (None means unlimited attempts)
 }
 
@@ -17,10 +17,10 @@ def hasRightType(name, value): # A function to check if the value is of the righ
     
     """Check if the value is of the right type for the given setting name"""
     
-    if name in ("use_rich", "bot_mode", "simulation"): # Check if the setting name is one of the boolean settings
+    if name in ("use_rich", "bot_mode", "simulation_mode"): # Check if the setting name is one of the boolean settings
         return isinstance(value, bool) # Return True if the value is a boolean otherwise return False
     
-    if name in ("leaderboard_sort", "history_path", "log_path"): # Check if the setting name is one of the string settings
+    if name in ("leaderboard_sort", "history_storage", "log_storage"): # Check if the setting name is one of the string settings
         return isinstance(value, str) # Return True if the value is a string otherwise return False
     
     if name == "attempt_limit": # Check if the setting name is "attempt_limit"

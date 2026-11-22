@@ -1,6 +1,8 @@
 # main.py: entry point for the guessing engine application
 
 from datetime import datetime # Import the datetime module to work with date and time for logging purposes
+from pathlib import Path # Import the Path class from the pathlib module to work with file paths for loading configuration and storage files
+import os # Import the os module to interact with the operating system for file and directory operations
 
 from engine.bot import binaryBot, randomBot # Import the binaryBot and randomBot classes from the bot module in the engine package to create bot instances for gameplay
 from engine.config import loadConfig # Import the loadConfig function from the config module in the engine package to load configuration settings for the application
@@ -57,7 +59,7 @@ def playHumanGame(screen, sessionBoard, allTimeBoard, settings, historyStorage, 
     
     """This function manages the gameplay for a human player. It creates a new game instance, plays a round of the game, collects the player's initials, creates a record of the game played, and updates the session and all-time leaderboards. It also handles saving leaderboard data and logging events related to the game played."""
     
-    currentGame = Game(attemptLimit = ["attempt_limit"]) # Create a new instance of the Game class with the attempt limit specified in the settings dictionary
+    currentGame = Game(attemptLimit = settings["attempt_limit"]) # Create a new instance of the Game class with the attempt limit specified in the settings dictionary
     turns = currentGame.playRound(screen) # Call the playRound method of the currentGame instance to start a round of the game and store the number of turns taken by the player in the turns variable
     
     if turns is None: # Check if the player canceled the game (turns is None)
@@ -71,8 +73,8 @@ def playHumanGame(screen, sessionBoard, allTimeBoard, settings, historyStorage, 
     now = datetime.now().isoformat(timespec='seconds') # Get the current date and time in ISO 8601 format with seconds precision and store it in the now variable
     record = makeRecord(initials, turns, now, "human") # Call the makeRecord function to create a record of the game played with the player's initials, number of turns taken, current date and time and the player type ("human") and store it in the record variable
     
-    sessionBoard.addRecord(record) # Call the addRecord method of the sessionBoard instance to add the newly created record to the session leaderboard
-    allTimeBoard.addRecord(record) # Call the addRecord method of the allTimeBoard instance to add the newly created record to the all-time leaderboard
+    sessionBoard.addResult(record) # Call the addResult method of the sessionBoard instance to add the newly created record to the session leaderboard
+    allTimeBoard.addResult(record) # Call the addResult method of the allTimeBoard instance to add the newly created record to the all-time leaderboard
     
     if not historyStorage.saveLeaderboardData(allTimeBoard.entries): # Call the saveLeaderboardData method of the historyStorage instance to save the all-time leaderboard data and check if the operation was successful (returns False if it failed)
         screen.showError("Failed to save leaderboard data. Please check the storage settings.") # If the save operation failed display an error message to the user indicating that the leaderboard data could not be saved and suggest checking the storage settings
@@ -115,8 +117,10 @@ def main(): # The main function that serves as the entry point for the guessing 
     
     """The main function serves as the entry point for the guessing engine application. It loads configuration settings, initializes display and storage objects, manages the main menu loop and handles user interactions for playing games, viewing leaderboards, running simulations and comparing sorting algorithms."""
     
+    os.chdir(Path(__file__).resolve().parent) # Change the current working directory to the directory where the main.py file is located to ensure that relative file paths for configuration and storage files are resolved correctly
+    
     settings, problems = loadConfig("config.json") # Load configuration settings and problems from the config.json file using the loadConfig function and store them in the settings and problems variables respectively
-    screen = createDisplay(settings["use_rich"]) # Create a display object based on the display mode specified in the settings dictionary. Plain or Rich
+    screen = createDisplay("rich" if settings["use_rich"] else "basic") # Create a display object for user interface based on the use_rich setting in the settings dictionary. If use_rich is True create a rich display; otherwise create a basic display and store it in the screen variable
     historyStorage = Storage(settings["history_storage"]) # Create a storage object for managing persistent storage of game history and leaderboard records based on the history storage settings specified in the settings dictionary
     logStorage = Storage(settings["log_storage"]) # Create a storage object for managing persistent storage of log events based on the log storage settings specified in the settings dictionary
     history = historyStorage.loadLeaderboardData() # Load the all-time leaderboard data from the history storage using the loadLeaderboardData method of the historyStorage object and store it in the history variable

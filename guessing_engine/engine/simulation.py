@@ -34,7 +34,7 @@ def summarizeResults(results): # A function that summarizes the results of the s
     """Summarizes the results of the simulation by calculating the fewest guesses, most guesses, total guesses and average guesses taken by the bot across all games played."""
     
     if len(results) == 0: # Check if the results list is empty, indicating that no games were played or the bot failed to guess the number in all games.
-        return 0, 0, 0, 0 # Return a tuple of zeros to indicate that there were no valid results to summarize.
+        return 0, 0, 0 # Return a tuple of zeros to indicate that there were no valid results to summarize.
     
     fewestGuesses = results[0] # Initialize the fewestGuesses variable to the first result in the results list. This will be used to track the minimum number of guesses taken by the bot across all games played
     mostGuesses = results[0] # Initialize the mostGuesses variable to the first result in the results list. This will be used to track the maximum number of guesses taken by the bot across all games played

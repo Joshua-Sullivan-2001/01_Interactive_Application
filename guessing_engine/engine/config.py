@@ -6,7 +6,7 @@ from pathlib import Path # Import the Path class from the pathlib module to hand
 defaults = { # Define the default configuration settings for the game
     "use_rich": False, # A boolean indicating whether to use the rich library for enhanced console output
     "bot_mode": False, # A boolean indicating whether the game is in bot mode (True) or human mode (False)
-    "simulation": False, # A boolean indicating whether the game is running in simulation mode (True) or normal mode (False)
+    "simulation_mode": False, # A boolean indicating whether the game is running in simulation mode (True) or normal mode (False)
     "leaderboard_sort": "insertion", # A string indicating the sorting algorithm to use for the leaderboard (default is "insertion")
     "history_storage": "data/history.json", # A string indicating the file path for storing the game history in JSON format
     "log_storage": "data/game.log", # A string indicating the file path for storing the game log in text format

@@ -27,9 +27,9 @@ class insertionSorter(Sorter): # A subclass of Sorter that implements the insert
             current = result[i] # Store the current element to be inserted into the sorted portion of the list
             j = i - 1 # Initialize the index for the last element in the sorted portion of the list
         
-        while j >= 0 and key(result[j]) > key(current): # Compare the current element with elements in the sorted portion of the list using the specified key function. If the current element is smaller than the compared element, shift the compared element to the right to make space for the current element
-            result[j + 1] = result[j] # Shift the compared element to the right to make space for the current element
-            j -= 1 # Decrement the index to continue comparing with the previous elements in the sorted portion of the list
+            while j >= 0 and key(result[j]) > key(current): # Compare the current element with elements in the sorted portion of the list using the specified key function. If the current element is smaller than the compared element, shift the compared element to the right to make space for the current element
+                result[j + 1] = result[j] # Shift the compared element to the right to make space for the current element
+                j -= 1 # Decrement the index to continue comparing with the previous elements in the sorted portion of the list
             
             result[j + 1] = current # Insert the current element into its correct position in the sorted portion of the list
             i += 1 # Increment the index to move to the next element in the list for sorting

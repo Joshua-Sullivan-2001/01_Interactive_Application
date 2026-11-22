@@ -1,7 +1,7 @@
 # testGame.py: tests the game logic and flow
 
-from guessing_engine.engine.display import Display # Import the display base class that the fake display will copy
-from guessing_engine.engine.game import Game, tooLow, tooHigh, correct # Import the game class and the constants from the game module
+from engine.display import Display # Import the display base class that the fake display will copy
+from engine.game import Game, tooLow, tooHigh, correct # Import the game class and the constants from the game module
 
 class fakeDisplay(Display): # A pretend display that gives scripted answers and remembers what it was asked to show
     

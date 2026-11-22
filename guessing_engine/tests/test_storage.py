@@ -2,7 +2,7 @@
 
 import os # Import the os module to interact with the operating system, such as checking for file existence and handling file paths
 import json # Import the json module to handle reading and writing JSON data for storing player data and leaderboard information
-from guessing_engine.engine.storage import Storage # Import the Storage class from the storage module
+from engine.storage import Storage # Import the Storage class from the storage module
 
 class TestStorage: # Define a test class to validate the functionality of the Storage class including loading, saving and clearing player data as well as converting data to a raw text format
     

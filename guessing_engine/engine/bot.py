@@ -29,13 +29,13 @@ class binaryBot: # Implements a bot that uses a binary search strategy
             guess = self.pickGuess(low, high) # Use the pickGuess function to determine the next guess based on the current low and high range
             guesses += 1 # Increment the guess counter to reflect that a new guess has been made
             outcome = currentGame.validateUserGuess(guess) # Call the validateUserGuess function from the current game instance to check if the guess is too high, too low or correct and store the result in the outcome variable
-        
-        if outcome == correct: # Check if the outcome of the guess is correct
-            return guesses # If the guess is correct return the total number of guesses made by the bot
-        elif outcome == tooLow: # Check if the outcome of the guess is too low
-            low = guess + 1 # If the guess is too low update the low range to be one more than the current guess to narrow down the search space
-        else: # If the outcome of the guess is too high
-            high = guess - 1 # If the guess is too high update the high range to be one less than the current guess to narrow down the search space
+            
+            if outcome == correct: # Check if the outcome of the guess is correct
+                return guesses # If the guess is correct return the total number of guesses made by the bot
+            elif outcome == tooLow: # Check if the outcome of the guess is too low
+                low = guess + 1 # If the guess is too low update the low range to be one more than the current guess to narrow down the search space
+            else: # If the outcome of the guess is too high
+                high = guess - 1 # If the guess is too high update the high range to be one less than the current guess to narrow down the search space
         
         return None # If the bot exhausts its allowed attempts without guessing the correct number return None to indicate that it was unsuccessful
 
@@ -62,11 +62,11 @@ class randomBot: # Implements a bot that makes random guesses within the valid r
             guesses += 1 # Increment the guess counter to reflect that a new guess has been made
             outcome = currentGame.validateUserGuess(guess) # Call the validateUserGuess function from the current game instance to check if the guess is too high, too low or correct and store the result in the outcome variable
         
-        if outcome == correct: # Check if the outcome of the guess is correct
-            return guesses # If the guess is correct return the total number of guesses made by the bot
-        elif outcome == tooLow: # Check if the outcome of the guess is too low
-            low = guess + 1 # If the guess is too low update the low range to be one more than the current guess to narrow down the search space
-        else: # If the outcome of the guess is too high
-            high = guess - 1 # If the guess is too high update the high range to be one less than the current guess to narrow down the search space
+            if outcome == correct: # Check if the outcome of the guess is correct
+                return guesses # If the guess is correct return the total number of guesses made by the bot
+            elif outcome == tooLow: # Check if the outcome of the guess is too low
+                low = guess + 1 # If the guess is too low update the low range to be one more than the current guess to narrow down the search space
+            else: # If the outcome of the guess is too high
+                high = guess - 1 # If the guess is too high update the high range to be one less than the current guess to narrow down the search space
         
         return None # If the bot exhausts its allowed attempts without guessing the correct number return None to indicate that it was unsuccessful

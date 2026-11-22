@@ -46,7 +46,7 @@ def loadConfig(path): # A function to load the configuration from a JSON file re
             data = json.load(file) # Load the contents of the config file as JSON data into the variable 'data'
     except (OSError, ValueError): # Catch any OSError (file access issues) or ValueError (invalid JSON) that occurs while trying to open or read the config file
         problems.append("config file broken so defaults used") # Append a message to the problems list indicating that the config file is broken and defaults will be used
-        data = None # Set 'data' to None to indicate that the config file could not be loaded successfully
+        return settings, problems # Return the default settings and the problems list indicating that the config file was broken
 
     if not isinstance(data, dict): # Check if the loaded data is not a dictionary (i.e., the config file is not in the expected format)
         problems.append("config file broken so defaults used") # Append a message to the problems list indicating that the config file is broken and defaults will be used

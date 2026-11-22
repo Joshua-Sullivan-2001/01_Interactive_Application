@@ -1,7 +1,7 @@
 {
     "use_rich": false,
-    "bot_mode": false,
-    "simulation_mode": false,
+    "bot_mode": true,
+    "simulation_mode": true,
     "leaderboard_sort": "insertion",
     "history_storage": "data/history.json",
     "log_storage": "data/game.log",

@@ -116,7 +116,7 @@ def main(): # The main function that serves as the entry point for the guessing 
     """The main function serves as the entry point for the guessing engine application. It loads configuration settings, initializes display and storage objects, manages the main menu loop and handles user interactions for playing games, viewing leaderboards, running simulations and comparing sorting algorithms."""
     
     settings, problems = loadConfig("config.json") # Load configuration settings and problems from the config.json file using the loadConfig function and store them in the settings and problems variables respectively
-    screen = createDisplay(settings["display_mode"]) # Create a display object based on the display mode specified in the settings dictionary. Plain or Rich
+    screen = createDisplay(settings["use_rich"]) # Create a display object based on the display mode specified in the settings dictionary. Plain or Rich
     historyStorage = Storage(settings["history_storage"]) # Create a storage object for managing persistent storage of game history and leaderboard records based on the history storage settings specified in the settings dictionary
     logStorage = Storage(settings["log_storage"]) # Create a storage object for managing persistent storage of log events based on the log storage settings specified in the settings dictionary
     history = historyStorage.loadLeaderboardData() # Load the all-time leaderboard data from the history storage using the loadLeaderboardData method of the historyStorage object and store it in the history variable

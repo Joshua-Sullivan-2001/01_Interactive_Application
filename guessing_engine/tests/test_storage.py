@@ -1,311 +1,153 @@
 # test_storage.py: tests the storage functionality for saving and loading game data
 
-import os # Import the os module to interact with the operating system, such as checking for file existence and handling file paths
+import os # Import the os module to interact with the operating system such as checking for file existence and handling file paths
 import json # Import the json module to handle reading and writing JSON data for storing player data and leaderboard information
 from engine.storage import Storage # Import the Storage class from the storage module
 
-class TestStorage: # Define a test class to validate the functionality of the Storage class including loading, saving and clearing player data as well as converting data to a raw text format
+def goodEntry(initials = "ABC", turns = 5): # A function to create a valid leaderboard entry with default values for initials and turns
     
-    """A test class to validate the functionality of the Storage class including loading, saving and clearing player data as well as converting data to a raw text format."""
+    """Return a valid leaderboard entry with the given initials and turns and a fixed timestamp for testing purposes."""
+    
+    return {"initials": initials, "turns": turns, "timestamp": "2026-11-20T10:00:00"} # Return a dictionary representing a valid leaderboard entry with the specified initials, turns and a fixed timestamp for testing
+    
 
-    def setup_method(self, method): # Define a setup method that runs before each test method to prepare the test environment
-        
-        """Setup method to initialize the Storage class and prepare the test environment before each test method."""
-        
-        self.testFilename = "test_leaderboard.json" # Define a test filename for the leaderboard JSON file to avoid issues with the actual game data
-        self.storage = Storage(self.testFilename) # Create an instance of the Storage class using the test filename
-        self.storage.clearLeaderboardData() # Clear any existing data (Which shouldn't be present) in the test leaderboard file to ensure a clean state for testing
+class TestStorage: # A class to test the Storage class functionality for saving and loading leaderboard data and logging events
     
-    def cleanupMethod(self, method): # Define a cleaning method that runs after each test method to clean up the test environment
-        
-        """Method to clean up the test save file after each test method."""
-        
-        if os.path.exists(self.testFilename): # Check if the test leaderboard JSON file exists
-            os.remove(self.testFilename) # Remove the test leaderboard JSON file to clean up after tests
+    """A class to test the Storage class functionality for saving and loading leaderboard data and logging events."""
     
-    def testLoadDataEmpty(self): # Define a test method to validate loading data from an empty leaderboard file
+    def testMissingFileGivesEmptyList(self, tmp_path): # A test to check that a missing history file results in an empty list and no problems simulating a first run scenario
         
-        """Test loading data from an empty leaderboard file."""
+        """"Test that a missing history file results in an empty list and no problems simulating a first run scenario."""
         
-        data = self.storage.loadLeaderboardData() # Load leaderboard data from the test leaderboard file
-        assert data == [], "Loading from an empty file should return an empty list." # Assert that the loaded data are an empty list indicating no data are present
-    
-    def testSaveAndLoadData(self): # Define a test method to validate saving and loading data to and from the leaderboard file
+        storage = Storage(str(tmp_path / "history.json")) # Create a Storage instance with a path to a non-existent history file in the temporary directory
+        assert storage.loadLeaderboardData() == [], "A missing file should give an empty list." # Assert that loading leaderboard data from a missing file returns an empty list
+        assert storage.problems == [], "A first run is not a problem." # Assert that there are no problems reported when loading from a missing file simulating a first run scenario
+
+    def testEmptyFileGivesEmptyList(self, tmp_path): # A test to check that an empty history file results in an empty list simulating a first run scenario
         
-        """Test saving and loading data to and from the leaderboard file."""
+        """Test that an empty history file results in an empty list simulating a first run scenario."""
         
-        testData = [{"name": "Alice", "turns taken": 10}, {"name": "Bob", "turns taken": 20}] # Define a list of test data to save
-        self.storage.saveLeaderboardData(testData) # Save the test data to the leaderboard file
-        loadedData = self.storage.loadLeaderboardData() # Load the data back from the leaderboard file
-        assert loadedData == testData, "Loaded data should match the saved data." # Assert that the loaded data match the originally saved test data
-    
-    def testClearData(self): # Define a test method to validate clearing data from the leaderboard file
+        path = tmp_path / "history.json" # Create a path for the history file in the temporary directory
+        path.write_text("   \n", encoding = "utf-8") # Write an empty string (with whitespace) to the history file to simulate an empty file
+        storage = Storage(str(path)) # Create a Storage instance with the path to the empty history file
+        assert storage.loadLeaderboardData() == [], "A blank file should give an empty list." # Assert that loading leaderboard data from an empty file returns an empty list
+
+    def testBrokenJsonGivesEmptyListAndAProblem(self, tmp_path): # A test to check that a file with invalid JSON results in an empty list and a reported problem without crashing the program
         
-        """Test clearing data from the leaderboard file."""
+        """Test that a file with invalid JSON results in an empty list and a reported problem without crashing the program."""
         
-        testData = [{"name": "Alice", "turns taken": 10}] # Define a list of test data to save
-        self.storage.saveLeaderboardData(testData) # Save the test data to the leaderboard file
-        self.storage.clearLeaderboardData() # Clear the data from the leaderboard file
-        loadedData = self.storage.loadLeaderboardData() # Load the data back from the leaderboard file
-        assert loadedData == [], "After clearing, loading should return an empty list." # Assert that the loaded data are an empty list indicating that the data were successfully cleared
-    
-    def testConvertToRawText(self): # Define a test method to validate converting data to a raw text format
+        path = tmp_path / "history.json" # Create a path for the history file in the temporary directory
+        path.write_text("{ not json", encoding = "utf-8") # Write invalid JSON content to the history file to simulate a broken file
+        storage = Storage(str(path)) # Create a Storage instance with the path to the broken history file
+        assert storage.loadLeaderboardData() == [], "A broken file should give an empty list." # Assert that loading leaderboard data from a broken file returns an empty list
+        assert len(storage.problems) == 1, "One problem should be reported." # Assert that one problem is reported when loading from a broken file indicating that the JSON is invalid
+
+    def testJsonThatIsNotAListGivesAProblem(self, tmp_path): # A test to check that a file with valid JSON that is not a list results in an empty list and a reported problem without crashing the program
         
-        """Test converting data to a raw text format."""
+        """Test that a file with valid JSON that is not a list results in an empty list and a reported problem without crashing the program."""
         
-        testData = [{"name": "Alice", "turns taken": 10}, {"name": "Bob", "turns taken": 20}] # Define a list of test data to convert
-        rawText = self.storage.convertToRawText(testData) # Convert the test data to a raw text format
-        expectedText = "Alice: 10\nBob: 20" # Define the expected raw text output for the test data
-        assert rawText == expectedText, "Raw text conversion should match the expected format." # Assert that the converted raw text matches the expected output format
-    
-    def testLoadDataNonexistentFile(self): # Define a test method to validate loading data from a nonexistent leaderboard file
+        path = tmp_path / "history.json" # Create a path for the history file in the temporary directory
+        path.write_text(json.dumps({"initials": "ABC"}), encoding = "utf-8") # Write valid JSON content that is not a list (a dictionary instead) to the history file to simulate an incorrect data structure
+        storage = Storage(str(path)) # Create a Storage instance with the path to the history file containing JSON that is not a list
+        assert storage.loadLeaderboardData() == [], "The wrong shape should give an empty list." # Assert that loading leaderboard data from a file with JSON that is not a list returns an empty list
+        assert storage.problems == ["Data is not a list."], "The problem should say it is not a list." # Assert that the reported problem indicates that the data is not a list confirming that the Storage class correctly identifies the issue
+
+    def testBadEntriesAreSkipped(self, tmp_path): # A test to check that bad entries in the leaderboard data are skipped and reported while good entries are still loaded correctly
         
-        """Test loading data from a nonexistent leaderboard file."""
+        """Test that bad entries in the leaderboard data are skipped and reported while good entries are still loaded correctly."""
         
-        nonExistentStorage = Storage("nonexistent_file.json") # Create an instance of the Storage class with a filename that does not exist
-        data = nonExistentStorage.loadLeaderboardData() # Attempt to load data from the nonexistent file
-        assert data == [], "Loading from a nonexistent file should return an empty list." # Assert that the loaded data is an empty list indicating that no data is present in a nonexistent file
-    
-    def testSaveDataOverwrite(self): # Define a test method to validate that saving data overwrites existing data in the leaderboard file
+        path = tmp_path / "history.json" # Create a path for the history file in the temporary directory
+        mixed = [goodEntry("AAA", 3), {"initials": "BBB"}, "text", goodEntry("CCC", 9)] # Create a list of mixed entries including good entries, a bad entry (missing timestamp) and a non-entry (string) to simulate a leaderboard file with both valid and invalid data
+        path.write_text(json.dumps(mixed), encoding = "utf-8") # Write the mixed entries to the history file in JSON format
+        storage = Storage(str(path)) # Create a Storage instance with the path to the history file containing mixed entries
+        loaded = storage.loadLeaderboardData() # Load the leaderboard data from the history file which should skip bad entries and report problems
+        assert [e["initials"] for e in loaded] == ["AAA", "CCC"], "Only the good entries should load." # Assert that only the good entries (with initials "AAA" and "CCC") are loaded confirming that bad entries are skipped
+        assert len(storage.problems) == 2, "Each bad entry should be reported." # Assert that two problems are reported corresponding to the two bad entries in the mixed list confirming that the Storage class correctly identifies and reports issues with invalid data
+
+    def testIsGoodEntry(self): # A test to check that the isGoodEntry method correctly identifies valid and invalid leaderboard entries based on the presence of required fields and their types
         
-        """Test that saving data overwrites existing data in the leaderboard file."""
+        """Test that the isGoodEntry method correctly identifies valid and invalid leaderboard entries based on the presence of required fields and their types."""
         
-        initialData = [{"name": "Alice", "turns taken": 10}] # Define an initial list of test data to save
-        self.storage.saveLeaderboardData(initialData) # Save the initial test data to the leaderboard file
-        newData = [{"name": "Bob", "turns taken": 20}] # Define a new list of test data to overwrite the initial data
-        self.storage.saveLeaderboardData(newData) # Save the new test data to the leaderboard file, overwriting the initial data
-        loadedData = self.storage.loadLeaderboardData() # Load the data back from the leaderboard file
-        assert loadedData == newData, "Loaded data should match the newly saved data after overwrite." # Assert that the loaded data match the newly saved test data confirming that the overwrite was successful
-    
-    def testConvertToRawTextEmpty(self): # Define a test method to validate converting an empty list of data to a raw text format
+        storage = Storage("unused.json") # Create a Storage instance with a dummy path as the isGoodEntry method does not depend on the file path
+        assert storage.isGoodEntry(goodEntry()) == True, "A complete entry is good." # Assert that a complete and valid entry is recognized as good by the isGoodEntry method
+        assert storage.isGoodEntry({"initials": "ABC", "turns": 5}) == False, "A missing timestamp is bad." # Assert that an entry missing the timestamp field is recognized as bad by the isGoodEntry method
+        assert storage.isGoodEntry({"initials": "ABC", "turns": "5", "timestamp": "x"}) == False, "Turns as text is bad." # Assert that an entry with the turns field as a string instead of an integer is recognized as bad by the isGoodEntry method
+        assert storage.isGoodEntry([1, 2, 3]) == False, "A list is not an entry." # Assert that a list is not recognized as a valid entry by the isGoodEntry method confirming that the method correctly identifies invalid data types
+
+    def testSaveAndLoadRoundTrip(self, tmp_path): # A test to check that saving and loading leaderboard data results in the same entries being returned confirming that the save and load methods work correctly together
         
-        """Test converting an empty list of data to a raw text format."""
+        """Test that saving and loading leaderboard data results in the same entries being returned confirming that the save and load methods work correctly together."""
         
-        emptyData = [] # Define an empty list of data
-        rawText = self.storage.convertToRawText(emptyData) # Convert the empty list of data to a raw text format
-        assert rawText == "", "Converting an empty list should return an empty string." # Assert that the converted raw text is an empty string indicating that there is no data to display
-    
-    def testConvertToRawTextSingleEntry(self): # Define a test method to validate converting a single player entry to a raw text format
+        storage = Storage(str(tmp_path / "history.json")) # Create a Storage instance with a path to the history file in the temporary directory
+        entries = [goodEntry("AAA", 3), goodEntry("BBB", 8)] # Create a list of good entries to be saved to the history file
+        assert storage.saveLeaderboardData(entries) == True, "A good save should return True." # Assert that saving the good entries returns True indicating a successful save operation
+        assert storage.loadLeaderboardData() == entries, "The loaded entries should match the saved ones." # Assert that loading the leaderboard data returns the same entries that were saved confirming that the save and load methods work correctly together
+
+    def testSaveOverwritesOldData(self, tmp_path): # A test to check that saving new leaderboard data overwrites old data instead of appending to it ensuring that only the most recent save is retained in the history file
         
-        """Test converting a single player entry to a raw text format."""
+        """Test that saving new leaderboard data overwrites old data instead of appending to it ensuring that only the most recent save is retained in the history file."""
         
-        singlePlayerData = [{"name": "Alice", "turns taken": 10}] # Define a list containing a single player entry
-        rawText = self.storage.convertToRawText(singlePlayerData) # Convert the single player entry to a raw text format
-        expectedText = "Alice: 10" # Define the expected raw text output for the single player entry
-        assert rawText == expectedText, "Raw text conversion for a single entry should match the expected format." # Assert that the converted raw text matches the expected output format for a single player entry
-    
-    def testLoadDataInvalidJson(self): # Define a test method to validate loading data from a leaderboard file containing invalid JSON data
+        storage = Storage(str(tmp_path / "history.json")) # Create a Storage instance with a path to the history file in the temporary directory
+        storage.saveLeaderboardData([goodEntry("AAA", 3)]) # Save an initial entry to the history file
+        storage.saveLeaderboardData([goodEntry("BBB", 8)]) # Save a new entry to the history file which should overwrite the previous entry
+        assert [e["initials"] for e in storage.loadLeaderboardData()] == ["BBB"], "Only the second save should remain." # Assert that loading the leaderboard data returns only the second entry, confirming that the old data was overwritten by the new save operation
+
+    def testSaveCreatesTheFolderAndLeavesNoTempFile(self, tmp_path): # A test to check that saving leaderboard data creates the necessary folder if it does not exist and does not leave behind any temporary files after the save operation
         
-        """Test loading data from a leaderboard file containing invalid JSON data."""
+        """Test that saving leaderboard data creates the necessary folder if it does not exist and does not leave behind any temporary files after the save operation."""
         
-        with open(self.testFilename, "w") as file: # Open the test leaderboard JSON file in write mode
-            file.write("Invalid JSON content") # Write invalid JSON content to the file
-        try: # Attempt to load data from the file containing invalid JSON data
-            self.storage.loadLeaderboardData() # Load data from the test leaderboard file
-            assert False, "Loading from a file with invalid JSON should raise a JSONDecodeError." # If no exception is raised assert False to indicate the test failed
-        except json.JSONDecodeError: # Catch the expected JSONDecodeError exception
-            pass # If the exception is raised, pass the test as it is the expected behavior
-    
-    def testSaveDataCreatesFile(self): # Define a test method to validate that saving data creates the leaderboard file if it does not exist
+        path = tmp_path / "data" / "history.json" # Create a path for the history file in a subdirectory of the temporary directory simulating a scenario where the folder does not exist
+        storage = Storage(str(path)) # Create a Storage instance with the path to the history file in the non-existent folder
+        assert storage.saveLeaderboardData([goodEntry()]) == True, "The save should work." # Assert that saving the good entry returns True indicating a successful save operation
+        assert path.exists(), "The history file should exist." # Assert that the history file now exists confirming that the necessary folder was created during the save operation
+        assert not os.path.exists(str(path) + ".tmp"), "The temporary file should be gone." # Assert that no temporary file (with a .tmp extension) exists after the save operation confirming that the save method cleans up any temporary files it creates
+
+    def testSaveRejectsANonList(self, tmp_path): # A test to check that saving something that is not a list returns False and does not write anything to the history file ensuring that only valid leaderboard data is accepted
         
-        """Test that saving data creates the leaderboard file if it does not exist."""
+        """Test that saving something that is not a list returns False and does not write anything to the history file ensuring that only valid leaderboard data is accepted."""
         
-        if os.path.exists(self.testFilename): # Check if the test leaderboard JSON file exists
-            os.remove(self.testFilename) # Remove the test leaderboard JSON file to ensure it does not exist before the test
-        testData = [{"name": "Alice", "turns taken": 10}] # Define a list of test data to save
-        self.storage.saveLeaderboardData(testData) # Save the test data to the leaderboard file
-        assert os.path.exists(self.testFilename), "Saving data should create the leaderboard file if it does not exist." # Assert that the leaderboard file now exists confirming that saving data created the file
-    
-    def testClearDataCreatesFile(self): # Define a test method to validate that clearing data creates the leaderboard file if it does not exist
+        path = tmp_path / "history.json" # Create a path for the history file in the temporary directory
+        storage = Storage(str(path)) # Create a Storage instance with the path to the history file
+        assert storage.saveLeaderboardData("not a list") == False, "A non list should be refused." # Assert that attempting to save a string (which is not a list) returns False indicating that the save operation was rejected
+        assert not path.exists(), "Nothing should be written." # Assert that the history file does not exist after the failed save operation confirming that no data was written to the file when an invalid input was provided
+
+    def testSaveFailureReturnsFalse(self, tmp_path): # A test to check that a save operation that cannot be written returns False and reports a problem ensuring that the Storage class handles write failures gracefully
         
-        """Test that clearing data creates the leaderboard file if it does not exist."""
+        """Test that a save operation that cannot be written returns False and reports a problem ensuring that the Storage class handles write failures gracefully."""
         
-        if os.path.exists(self.testFilename): # Check if the test leaderboard JSON file exists
-            os.remove(self.testFilename) # Remove the test leaderboard JSON file to ensure it does not exist before the test
-        self.storage.clearLeaderboardData() # Clear the data from the leaderboard file
-        assert os.path.exists(self.testFilename), "Clearing data should create the leaderboard file if it does not exist." # Assert that the leaderboard file now exists, confirming that clearing data created the file
-    
-    def testLoadDataAfterClear(self): # Define a test method to validate that loading data after clearing returns an empty list
+        blocker = tmp_path / "blocker" # Create a path for a file that will block the save operation by being a directory instead of a file
+        blocker.write_text("x", encoding = "utf-8") # Write some content to the blocker path making it a file that will prevent the save operation from creating a history.json file in the same location
+        storage = Storage(str(blocker / "history.json")) # Create a Storage instance with a path that points to a file inside the blocker directory which will cause the save operation to fail because it cannot create a file in a non-directory path
+        assert storage.saveLeaderboardData([goodEntry()]) == False, "The save should fail safely." # Assert that attempting to save the good entry returns False indicating that the save operation failed due to the inability to write to the specified path
+        assert storage.problems == ["Failed to save leaderboard data."], "The problem should be reported." # Assert that the reported problem indicates that the save operation failed confirming that the Storage class correctly identifies and reports issues when it cannot write to the specified path
+
+    def testClearLeavesAnEmptyList(self, tmp_path): # A test to check that clearing the leaderboard data results in an empty list being saved to the history file ensuring that the clear operation works correctly
         
-        """Test that loading data after clearing returns an empty list."""
+        """Test that clearing the leaderboard data results in an empty list being saved to the history file ensuring that the clear operation works correctly."""
         
-        testData = [{"name": "Alice", "turns taken": 10}] # Define a list of test data to save
-        self.storage.saveLeaderboardData(testData) # Save the test data to the leaderboard file
-        self.storage.clearLeaderboardData() # Clear the data from the leaderboard file
-        loadedData = self.storage.loadLeaderboardData() # Load the data back from the leaderboard file
-        assert loadedData == [], "After clearing, loading should return an empty list." # Assert that the loaded data is an empty list indicating that the data was successfully cleared
-    
-    def testSaveDataMultipleTimes(self): # Define a test method to validate that saving data multiple times overwrites the previous data
+        storage = Storage(str(tmp_path / "history.json")) # Create a Storage instance with a path to the history file in the temporary directory
+        storage.saveLeaderboardData([goodEntry()]) # Save an initial entry to the history file to ensure that there is data to clear
+        storage.clearLeaderboardData() # Call the clearLeaderboardData method to clear the leaderboard data which should result in an empty list being saved to the history file
+        assert storage.loadLeaderboardData() == [], "After clearing the list should be empty." # Assert that loading the leaderboard data after clearing returns an empty list confirming that the clear operation successfully removed all entries from the history file
+
+    def testConvertToRawText(self): # A test to check that the convertToRawText method correctly converts a list of leaderboard entries into a formatted string representation with each entry on a separate line
         
-        """Test that saving data multiple times overwrites the previous data."""
+        """Test that the convertToRawText method correctly converts a list of leaderboard entries into a formatted string representation with each entry on a separate line."""
         
-        firstData = [{"name": "Alice", "turns taken": 10}] # Define the first list of test data to save
-        self.storage.saveLeaderboardData(firstData) # Save the first test data to the leaderboard file
-        secondData = [{"name": "Bob", "turns taken": 20}] # Define the second list of test data to save
-        self.storage.saveLeaderboardData(secondData) # Save the second test data to the leaderboard file overwriting the first data
-        loadedData = self.storage.loadLeaderboardData() # Load the data back from the leaderboard file
-        assert loadedData == secondData, "Loaded data should match the last saved data after multiple saves." # Assert that the loaded data match the last saved test data confirming that multiple saves overwrite previous data
-    
-    def testClearLeaderboardDataMultipleTimes(self): # Define a test method to validate that clearing data multiple times does not cause errors and always results in an empty list
+        storage = Storage("unused.json") # Create a Storage instance with a dummy path as the convertToRawText method does not depend on the file path
+        text = storage.convertToRawText([goodEntry("AAA", 3), goodEntry("BBB", 8)]) # Call the convertToRawText method with a list of good entries to convert them into a formatted string representation
+        assert text == "AAA - 3 turns - 2026-11-20T10:00:00\nBBB - 8 turns - 2026-11-20T10:00:00", "Each entry should be one line." # Assert that the formatted string representation matches the expected output with each entry on a separate line
+        assert storage.convertToRawText([]) == "", "No entries should give empty text." # Assert that the formatted string representation matches the expected output with each entry on a separate line and that an empty list of entries results in an empty string
+
+    def testLogEventWritesATimestampedLine(self, tmp_path): # A test to check that the logEvent method correctly writes a timestamped line to the log file with each event being recorded on a separate line
         
-        """Test that clearing data multiple times does not cause errors and always results in an empty list."""
+        """Test that the logEvent method correctly writes a timestamped line to the log file with each event being recorded on a separate line."""
         
-        testData = [{"name": "Alice", "turns taken": 10}] # Define a list of test data to save
-        self.storage.saveLeaderboardData(testData) # Save the test data to the leaderboard file
-        self.storage.clearLeaderboardData() # Clear the data from the leaderboard file
-        self.storage.clearLeaderboardData() # Clear the data again to test multiple clears
-        loadedData = self.storage.loadLeaderboardData() # Load the data back from the leaderboard file
-        assert loadedData == [], "After multiple clears, loading should return an empty list." # Assert that the loaded data is an empty list indicating that multiple clears do not cause errors and result in an empty state
-    
-    def testConvertToRawTextSpecialCharacters(self): # Define a test method to validate converting data with special characters to a raw text format
-        
-        """Test converting data with special characters to a raw text format."""
-        
-        specialData = [{"name": "Al!ce", "turns taken": 10}, {"name": "B@b", "turns taken": 20}] # Define a list of test data with special characters in player names
-        rawText = self.storage.convertToRawText(specialData) # Convert the test data with special characters to a raw text format
-        expectedText = "Al!ce: 10\nB@b: 20" # Define the expected raw text output for the test data with special characters
-        assert rawText == expectedText, "Raw text conversion should correctly handle special characters in names." # Assert that the converted raw text matches the expected output format confirming that special characters are handled correctly
-    
-    def testConvertToRawTextLargeNumbers(self): # Define a test method to validate converting data with large numbers to a raw text format
-        
-        """Test converting data with large numbers to a raw text format."""
-        
-        largeTurns = [{"name": "Alice", "turns taken": 1000000}, {"name": "Bob", "turns taken": 2000000}] # Define a list of test data with large turns taken values
-        rawText = self.storage.convertToRawText(largeTurns) # Convert the test data with large numbers to a raw text format
-        expectedText = "Alice: 1000000\nBob: 2000000" # Define the expected raw text output for the test data with large numbers
-        assert rawText == expectedText, "Raw text conversion should correctly handle large numbers." # Assert that the converted raw text matches the expected output format confirming that large numbers are handled correctly
-    
-    def testConvertToRawTextSpecialCharactersInNames(self): # Define a test method to validate converting data with special characters in player names to a raw text format
-        
-        """Test converting data with special characters in player names to a raw text format."""
-        
-        specialCharData = [{"name": "Al!ce", "turns taken": 10}, {"name": "B@b", "turns taken": 20}] # Define a list of test data with special characters in player names
-        rawText = self.storage.convertToRawText(specialCharData) # Convert the test data with special characters to a raw text format
-        expectedText = "Al!ce: 10\nB@b: 20" # Define the expected raw text output for the test data with special characters
-        assert rawText == expectedText, "Raw text conversion should correctly handle special characters in player names." # Assert that the converted raw text matches the expected output format confirming that special characters in player names are handled correctly
-    
-    def testConvertToRawTextUnicodeNames(self): # Define a test method to validate converting data with Unicode characters in player names to a raw text format
-        
-        """Test converting data with Unicode characters in player names to a raw text format."""
-        
-        unicodeData = [{"name": "Alïce", "turns taken": 10}, {"name": "Bøb", "turns taken": 20}] # Define a list of test data with Unicode characters in player names
-        rawText = self.storage.convertToRawText(unicodeData) # Convert the test data with Unicode characters to a raw text format
-        expectedText = "Alïce: 10\nBøb: 20" # Define the expected raw text output for the test data with Unicode characters
-        assert rawText == expectedText, "Raw text conversion should correctly handle Unicode characters in player names." # Assert that the converted raw text matches the expected output format confirming that Unicode characters in player names are handled correctly
-    
-    def testConvertToRawTextEmptyNames(self): # Define a test method to validate converting data with empty player names to a raw text format
-        
-        """Test converting data with empty player names to a raw text format."""
-        
-        emptyNameData = [{"name": "", "turns taken": 10}, {"name": "", "turns taken": 20}] # Define a list of test data with empty player names
-        rawText = self.storage.convertToRawText(emptyNameData) # Convert the test data with empty names to a raw text format
-        expectedText = ": 10\n: 20" # Define the expected raw text output for the test data with empty names
-        assert rawText == expectedText, "Raw text conversion should correctly handle empty player names." # Assert that the converted raw text matches the expected output format confirming that empty player names are handled correctly
-    
-    def testConvertToRawTextMixedNameLengths(self): # Define a test method to validate converting data with mixed name lengths to a raw text format
-        
-        """Test converting data with mixed name lengths to a raw text format."""
-        
-        mixedLengthData = [{"name": "A", "turns taken": 10}, {"name": "Bob", "turns taken": 20}, {"name": "Charlie", "turns taken": 30}] # Define a list of test data with mixed name lengths
-        rawText = self.storage.convertToRawText(mixedLengthData) # Convert the test data with mixed name lengths to a raw text format
-        expectedText = "A: 10\nBob: 20\nCharlie: 30" # Define the expected raw text output for the test data with mixed name lengths
-        assert rawText == expectedText, "Raw text conversion should correctly handle mixed name lengths." # Assert that the converted raw text matches the expected output format confirming that mixed name lengths are handled correctly
-    
-    def testConvertToRawTextSpecialCharactersAndUnicode(self): # Define a test method to validate converting data with both special characters and Unicode characters in player names to a raw text format
-        
-        """Test converting data with both special characters and Unicode characters in player names to a raw text format."""
-        
-        specialUnicodeData = [{"name": "Al!ce", "turns taken": 10}, {"name": "Bøb", "turns taken": 20}] # Define a list of test data with both special characters and Unicode characters in player names
-        rawText = self.storage.convertToRawText(specialUnicodeData) # Convert the test data with special and Unicode characters to a raw text format
-        expectedText = "Al!ce: 10\nBøb: 20" # Define the expected raw text output for the test data with special and Unicode characters
-        assert rawText == expectedText, "Raw text conversion should correctly handle both special and Unicode characters in player names." # Assert that the converted raw text matches the expected output format confirming that both special and Unicode characters in player names are handled correctly
-    
-    def testConvertToRawTextLargeTurnsTakenValues(self): # Define a test method to validate converting data with large turns taken values to a raw text format
-        
-        """Test converting data with large turns taken values to a raw text format."""
-        
-        largeDataValues = [{"name": "Alice", "turns taken": 999999999}, {"name": "Bob", "turns taken": 888888888}] # Define a list of test data with large turns taken values
-        rawText = self.storage.convertToRawText(largeDataValues) # Convert the test data with large turns taken values to a raw text format
-        expectedText = "Alice: 999999999\nBob: 888888888" # Define the expected raw text output for the test data with large turns taken values
-        assert rawText == expectedText, "Raw text conversion should correctly handle large turns taken values." # Assert that the converted raw text matches the expected output format confirming that large turns taken values are handled correctly
-    
-    def testConvertToRawTextMixedTurnsTakenAndNames(self): # Define a test method to validate converting data with mixed turns taken values and player names to a raw text format
-        
-        """Test converting data with mixed turns taken values and player names to a raw text format."""
-        
-        mixedTurnsTakenAndNames = [{"name": "Alice", "turns taken": 10}, {"name": "Bøb", "turns taken": 5}, {"name": "", "turns taken": 0}] # Define a list of test data with mixed turns taken values and player names
-        rawText = self.storage.convertToRawText(mixedTurnsTakenAndNames) # Convert the test data with mixed values and names to a raw text format
-        expectedText = "Alice: 10\nBøb: 5\n: 0" # Define the expected raw text output for the test data with mixed values and names
-        assert rawText == expectedText, "Raw text conversion should correctly handle mixed turns taken values and player names." # Assert that the converted raw text matches the expected output format confirming that mixed turns taken values and player names are handled correctly
-    
-    def testConvertToRawTextSpecialCharactersInData(self): # Define a test method to validate converting data with special characters in turns taken values to a raw text format
-        
-        """Test converting data with special characters in turns taken values to a raw text format."""
-        
-        specialCharData = [{"name": "Alice", "turns taken": 10}, {"name": "Bob", "turns taken": -20}] # Define a list of test data with special characters in turns taken values (negative sign)
-        rawText = self.storage.convertToRawText(specialCharData) # Convert the test data with special characters in turns taken values to a raw text format
-        expectedText = "Alice: 10\nBob: -20" # Define the expected raw text output for the test data with special characters in turns taken values
-        assert rawText == expectedText, "Raw text conversion should correctly handle special characters in turns taken values." # Assert that the converted raw text matches the expected output format confirming that special characters in turns taken values are handled correctly
-    
-    def testConvertToRawTextLargeAndSmallTurnsTaken(self): # Define a test method to validate converting data with both large and small turns taken values to a raw text format
-        
-        """Test converting data with both large and small turns taken values to a raw text format."""
-        
-        largeSmallTurnsTaken = [{"name": "Alice", "turns taken": 1000000}, {"name": "Bob", "turns taken": 1}] # Define a list of test data with both large and small turns taken values
-        rawText = self.storage.convertToRawText(largeSmallTurnsTaken) # Convert the test data with large and small values to a raw text format
-        expectedText = "Alice: 1000000\nBob: 1" # Define the expected raw text output for the test data with large and small values
-        assert rawText == expectedText, "Raw text conversion should correctly handle both large and small turns taken values." # Assert that the converted raw text matches the expected output format confirming that both large and small turns taken values are handled correctly
-    
-    def testConvertToRawTextMixedSpecialCharactersAndUnicode(self): # Define a test method to validate converting data with mixed special characters and Unicode characters in player names to a raw text format
-        
-        """Test converting data with mixed special characters and Unicode characters in player names to a raw text format."""
-        
-        mixedSpecialUnicodeData = [{"name": "Al!ce", "turns taken": 10}, {"name": "Bøb", "turns taken": 20}] # Define a list of test data with mixed special characters and Unicode characters in player names
-        rawText = self.storage.convertToRawText(mixedSpecialUnicodeData) # Convert the test data with mixed special and Unicode characters to a raw text format
-        expectedText = "Al!ce: 10\nBøb: 20" # Define the expected raw text output for the test data with mixed special and Unicode characters
-        assert rawText == expectedText, "Raw text conversion should correctly handle mixed special and Unicode characters in player names." # Assert that the converted raw text matches the expected output format confirming that mixed special and Unicode characters in player names are handled correctly
-    
-    def testConvertToRawTextEmptyAndNonemptyNames(self): # Define a test method to validate converting data with both empty and non-empty player names to a raw text format
-        
-        """Test converting data with both empty and non-empty player names to a raw text format."""
-        
-        emptyNonemptyNameData = [{"name": "", "turns taken": 10}, {"name": "Bob", "turns taken": 20}] # Define a list of test data with both empty and non-empty player names
-        rawText = self.storage.convertToRawText(emptyNonemptyNameData) # Convert the test data with empty and non-empty names to a raw text format
-        expectedText = ": 10\nBob: 20" # Define the expected raw text output for the test data with empty and non-empty names
-        assert rawText == expectedText, "Raw text conversion should correctly handle both empty and non-empty player names." # Assert that the converted raw text matches the expected output format confirming that both empty and non-empty player names are handled correctly
-    
-    def testConvertToRawTextMixedNameLengthsAndTurnsTaken(self): # Define a test method to validate converting data with mixed name lengths and turns taken values to a raw text format
-        
-        """Test converting data with mixed name lengths and turns taken values to a raw text format."""
-        
-        mixedNameLengthTurnsTakenValues = [{"name": "A", "turns taken": 10}, {"name": "Bob", "turns taken": -5}, {"name": "Charlie", "turns taken": 0}] # Define a list of test data with mixed name lengths and turns taken values
-        rawText = self.storage.convertToRawText(mixedNameLengthTurnsTakenValues) # Convert the test data with mixed name lengths and turns taken values to a raw text format
-        expectedText = "A: 10\nBob: -5\nCharlie: 0" # Define the expected raw text output for the test data with mixed name lengths and turns taken values
-        assert rawText == expectedText, "Raw text conversion should correctly handle mixed name lengths and turns taken values." # Assert that the converted raw text matches the expected output format confirming that mixed name lengths and turns taken values are handled correctly
-    
-    def testConvertToRawTextSpecialCharactersInNamesAndTurnsTaken(self): # Define a test method to validate converting data with special characters in both player names and turns taken values to a raw text format
-        
-        """Test converting data with special characters in both player names and turns taken values to a raw text format."""
-        
-        specialCharNameDataValues = [{"name": "Al!ce", "turns taken": 10}, {"name": "B@b", "turns taken": -20}] # Define a list of test data with special characters in both player names and turns taken values
-        rawText = self.storage.convertToRawText(specialCharNameDataValues) # Convert the test data with special characters in names and turns taken values to a raw text format
-        expectedText = "Al!ce: 10\nB@b: -20" # Define the expected raw text output for the test data with special characters in names and turns taken values
-        assert rawText == expectedText, "Raw text conversion should correctly handle special characters in both player names and turns taken values." # Assert that the converted raw text matches the expected output format confirming that special characters in both player names and turns taken values are handled correctly
-    
-    def testConvertToRawTextUnicodeInNamesAndTurnsTaken(self): # Define a test method to validate converting data with Unicode characters in both player names and turns taken values to a raw text format
-        
-        """Test converting data with Unicode characters in both player names and turns taken values to a raw text format."""
-        
-        unicodeNameTurnsTakenValues = [{"name": "Alïce", "turns taken": 10}, {"name": "Bøb", "turns taken": -20}] # Define a list of test data with Unicode characters in both player names and turns taken values
-        rawText = self.storage.convertToRawText(unicodeNameTurnsTakenValues) # Convert the test data with Unicode characters in names and turns taken values to a raw text format
-        expectedText = "Alïce: 10\nBøb: -20" # Define the expected raw text output for the test data with Unicode characters in names and turns taken values
-        assert rawText == expectedText, "Raw text conversion should correctly handle Unicode characters in both player names and turns taken values." # Assert that the converted raw text matches the expected output format confirming that Unicode characters in both player names and turns taken values are handled correctly
-    
-    def testConvertToRawTextMixedSpecialUnicodeAndEmptyNames(self): # Define a test method to validate converting data with mixed special characters, Unicode characters and empty player names to a raw text format
-        
-        """Test converting data with mixed special characters, Unicode characters and empty player names to a raw text format."""
-        
-        mixedSpecialUnicodeEmptyNames = [{"name": "Al!ce", "turns taken": 10}, {"name": "Bøb", "turns taken": -20}, {"name": "", "turns taken": 0}] # Define a list of test data with mixed special characters, Unicode characters and empty player names
-        rawText = self.storage.convertToRawText(mixedSpecialUnicodeEmptyNames) # Convert the test data with mixed special, Unicode and empty names to a raw text format
-        expectedText = "Al!ce: 10\nBøb: -20\n: 0" # Define the expected raw text output for the test data with mixed special, Unicode and empty names
-        assert rawText == expectedText, "Raw text conversion should correctly handle mixed special characters, Unicode characters, and empty player names." # Assert that the converted raw text matches the expected output format confirming that mixed special characters, Unicode characters and empty player names are handled correctly
+        path = tmp_path / "logs" / "game.log" # Create a path for the log file in a subdirectory of the temporary directory simulating a scenario where the folder does not exist
+        logger = Storage(str(path)) # Create a Storage instance with the path to the log file in the non-existent folder
+        logger.logEvent("First event") # Log the first event using the logEvent method which should write a timestamped line to the log file
+        logger.logEvent("Second event") # Log the second event using the logEvent method which should write another timestamped line to the log file
+        lines = path.read_text(encoding = "utf-8").splitlines() # Read the contents of the log file and split it into lines to verify that each event was recorded correctly
+        assert len(lines) == 2, "There should be two lines." # Assert that there are two lines in the log file confirming that both events were logged successfully
+        assert lines[0].startswith("[") and lines[0].endswith("] First event"), "The line should be a timestamp then the text." # Assert that the first line in the log file starts with a timestamp and ends with the text of the first event confirming that the logEvent method correctly formats the log entry
+        assert lines[1].endswith("] Second event"), "The second event should be on the second line." # Assert that the second line in the log file ends with the text of the second event confirming that the logEvent method correctly formats the log entry for the second event

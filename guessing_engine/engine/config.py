@@ -37,7 +37,7 @@ def loadConfig(path): # A function to load the configuration from a JSON file re
     settings = dict(defaults) # Create a copy of the default settings to be used as the initial configuration
     problems = [] # Initialize an empty list to hold any problems encountered while loading the configuration
 
-    if not Path(path).is_file(): # Check if the specified path is not a file (i.e., the config file does not exist)
+    if not Path(path).is_file(): # Check if the specified path is not a file (i.e. the config file does not exist)
         problems.append("config file missing so defaults used") # Append a message to the problems list indicating that the config file is missing and defaults will be used
         return settings, problems # Return the default settings and the problems list indicating that the config file was missing
 
@@ -48,7 +48,7 @@ def loadConfig(path): # A function to load the configuration from a JSON file re
         problems.append("config file broken so defaults used") # Append a message to the problems list indicating that the config file is broken and defaults will be used
         return settings, problems # Return the default settings and the problems list indicating that the config file was broken
 
-    if not isinstance(data, dict): # Check if the loaded data is not a dictionary (i.e., the config file is not in the expected format)
+    if not isinstance(data, dict): # Check if the loaded data is not a dictionary (i.e. the config file is not in the expected format)
         problems.append("config file broken so defaults used") # Append a message to the problems list indicating that the config file is broken and defaults will be used
         return settings, problems # Return the default settings and the problems list indicating that the config file was broken
 

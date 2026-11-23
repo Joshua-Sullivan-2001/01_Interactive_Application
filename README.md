@@ -12,7 +12,7 @@ The project is designed to demonstrate input validation, control flow, classes, 
 
 ## Development Status
 
-This repository currently contains the project scaffold. The Python modules and entry point are placeholders, so the game is not yet runnable. This README describes the target behavior and planned structure. I need to update the run instructions as the implementation is completed.
+This repository currently contains the project scaffold. The Python modules and entry point are placeholders so the game is not yet runnable. This README describes the target behavior and planned structure. I need to update the run instructions as the implementation is completed.
 
 ## Design
 

@@ -27,7 +27,7 @@ class insertionSorter(Sorter): # A subclass of Sorter that implements the insert
             current = result[i] # Store the current element to be inserted into the sorted portion of the list
             j = i - 1 # Initialize the index for the last element in the sorted portion of the list
         
-            while j >= 0 and key(result[j]) > key(current): # Compare the current element with elements in the sorted portion of the list using the specified key function. If the current element is smaller than the compared element, shift the compared element to the right to make space for the current element
+            while j >= 0 and key(result[j]) > key(current): # Compare the current element with elements in the sorted portion of the list using the specified key function. If the current element is smaller than the compared element shift the compared element to the right to make space for the current element
                 result[j + 1] = result[j] # Shift the compared element to the right to make space for the current element
                 j -= 1 # Decrement the index to continue comparing with the previous elements in the sorted portion of the list
             
@@ -77,7 +77,7 @@ class mergeSorter(Sorter): # A subclass of Sorter that implements the merge sort
         
         return merged # Return the merged list which is now sorted based on the specified key function
 
-def getSorter(name): # A function to return an instance of the specified sorter class based on the name provided. If the name is "merge" it returns an instance of MergeSorter, otherwise it returns an instance of InsertionSorter
+def getSorter(name): # A function to return an instance of the specified sorter class based on the name provided. If the name is "merge" it returns an instance of MergeSorter otherwise it returns an instance of InsertionSorter
     
     """Returns an instance of the specified sorter class based on the name"""
     

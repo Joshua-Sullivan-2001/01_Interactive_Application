@@ -146,17 +146,43 @@ class basicDisplay(Display): # A basic display class that implements the methods
             return None # Return None to indicate that the input was interrupted
 
 
-# Optional add the Rich library and create a RichDisplay class if i have enough time to implement it.
+# Check if the 'rich' library is available for enhanced text formatting. If not, set rich_available to False
 
+try:
+    from rich.console import Console
+    rich_available = True
+except ImportError:
+    rich_available = False
 
-
-
-
-
-
-
-
-
+class richDisplay(Display): # A display class that uses the 'rich' library for enhanced text formatting in the console
+    
+    """A display class that uses the 'rich' library for enhanced text formatting in the console. It implements the methods from the Display base class."""
+    
+    def __init__(self): # Initializes the richDisplay class and checks if the 'rich' library is available. If not raises an ImportError
+        
+        """Initializes the richDisplay class and checks if the 'rich' library is available. If not raises an ImportError."""
+        
+        if not rich_available: # Check if the 'rich' library is available
+            raise ImportError("The 'rich' library is not installed. Please install it to use richDisplay.") # Raise an ImportError indicating that the 'rich' library is not installed
+        self.console = Console() # Create an instance of the Console class from the 'rich' library for enhanced text formatting in the console
+    
+    def showError(self, errorMessage): # Displays an error message to the user using the 'rich' library for enhanced formatting
+        
+        """Displays an error message to the user using the 'rich' library for enhanced formatting."""
+        
+        self.console.print(f"Error: {errorMessage}", style="bold red", markup=False) # Print the error message to the console with bold red text using the 'rich' library for enhanced formatting
+    
+    def showHint(self, hintMessage): # Displays a hint message to the user using the 'rich' library for enhanced formatting
+        
+        """Displays a hint message to the user using the 'rich' library for enhanced formatting."""
+        
+        self.console.print(f"Hint: {hintMessage}", style="yellow", markup=False) # Print the hint message to the console with yellow text using the 'rich' library for enhanced formatting
+    
+    def showWin(self, turns): # Displays a win message to the user with the number of turns taken using the 'rich' library for enhanced formatting
+        
+        """Displays a win message to the user with the number of turns taken using the 'rich' library for enhanced formatting."""
+        
+        self.console.print(winMessage.format(turns=turns), style="bold green", markup=False) # Print the win message to the console with bold green text using the 'rich' library for enhanced formatting
 
 # Utility function to create a display object based on the specified type
 
@@ -167,8 +193,7 @@ def createDisplay(displayType): # Creates a display object based on the specifie
     if displayType == "basic": # Check if the specified display type is "basic"
         return basicDisplay() # Return an instance of the basicDisplay class
     elif displayType == "rich": # Check if the specified display type is "rich"
-        return basicDisplay() # Return an instance of the basicDisplay class (as a placeholder for RichDisplay if implemented)
-    # elif displayType == "rich": # Check if the specified display type is "rich"
-    #     return RichDisplay() # Return an instance of the RichDisplay class (if implemented
+        return richDisplay() # Return an instance of the richDisplay class
     else: # If the specified display type is not recognized
         raise ValueError(f"Unknown display type: {displayType}") # Raise a ValueError indicating that the display type is unknown
+    

@@ -5,7 +5,7 @@ from engine.game import Game, tooLow, tooHigh, correct # Import the game class a
 
 class fakeDisplay(Display): # A pretend display that gives scripted answers and remembers what it was asked to show
     
-    """A fake display for testing the game logic. It takes a list of answers to give when asked for a guess, and remembers any messages it was asked to show."""
+    """A fake display for testing the game logic. It takes a list of answers to give when asked for a guess and remembers any messages it was asked to show."""
     
     def __init__(self, answers): # A function to initialize the fake display with a list of answers to give when asked for a guess and to remember any messages it was asked to show
         

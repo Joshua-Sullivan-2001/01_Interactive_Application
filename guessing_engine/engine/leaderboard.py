@@ -28,7 +28,7 @@ class Leaderboard: # The Leaderboard class manages the list of players and their
         
         """Adds a new record to the end of the leaderboard list and returns true if the record was added successfully or false if the record was not added"""
         
-        if record.get("source") != "human": # Checks if the record source is not human (i.e., it's a bot)
+        if record.get("source") != "human": # Checks if the record source is not human (i.e. it's a bot)
             return False # Do not let bot records be added to the leaderboard
         
         if not record.get("initials") or record.get("turns", 0) < 1: # Checks if the record has no initials or less than 1 turn

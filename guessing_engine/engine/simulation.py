@@ -18,13 +18,13 @@ def runSimulation(botClass, games, seed): # A function that runs a simulation of
     random.seed(seed) # Set the random seed to ensure reproducibility of the simulation results. This allows for consistent behavior across different runs of the simulation
     results = [] # Initialize an empty list to store the results of each game played by the bot. Each entry in this list will represent the number of guesses taken by the bot to correctly guess the number in a single game
     
-    for _ in range(games): # Loop through the specified number of games to be played in the simulation. For each iteration, a new game instance will be created and the bot will attempt to guess the number
+    for _ in range(games): # Loop through the specified number of games to be played in the simulation. For each iteration a new game instance will be created and the bot will attempt to guess the number
         
         currentGame = Game() # Create a new instance of the Game class for the current game
         bot = botClass() # Create an instance of the specified bot class that will be used to play the current game
-        guesses = bot.play(currentGame) # Call the play method of the bot instance, passing in the current game instance. The bot will attempt to guess the number and the number of guesses taken will be returned and stored in the variable guesses
+        guesses = bot.play(currentGame) # Call the play method of the bot instance passing in the current game instance. The bot will attempt to guess the number and the number of guesses taken will be returned and stored in the variable guesses
         
-        if guesses is not None: # Check if the bot successfully guessed the number (i.e., guesses is not None). If the bot failed to guess the number it will return None and it will not record that game in the results
+        if guesses is not None: # Check if the bot successfully guessed the number (i.e. guesses is not None). If the bot failed to guess the number it will return None and it will not record that game in the results
             results.append(guesses) # Append the number of guesses taken by the bot to the results list
             
     return results # Return the list of results containing the number of guesses taken by the bot for each game played in the simulation
@@ -33,7 +33,7 @@ def summarizeResults(results): # A function that summarizes the results of the s
     
     """Summarizes the results of the simulation by calculating the fewest guesses, most guesses, total guesses and average guesses taken by the bot across all games played."""
     
-    if len(results) == 0: # Check if the results list is empty, indicating that no games were played or the bot failed to guess the number in all games.
+    if len(results) == 0: # Check if the results list is empty indicating that no games were played or the bot failed to guess the number in all games.
         return 0, 0, 0 # Return a tuple of zeros to indicate that there were no valid results to summarize.
     
     fewestGuesses = results[0] # Initialize the fewestGuesses variable to the first result in the results list. This will be used to track the minimum number of guesses taken by the bot across all games played

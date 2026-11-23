@@ -1,6 +1,5 @@
 # test_validator.py: tests the input validation logic for the game
 
-
 from engine.validator import validateGuess, maxInputLength # Import the validate_Guess function from the validator module
 
 def testValidateGuess(): # Define a test function to validate the behavior of the validateGuess function with various input cases

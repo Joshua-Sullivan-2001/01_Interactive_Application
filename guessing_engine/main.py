@@ -14,8 +14,7 @@ from engine.sorting import getSorter # Import the getSorter function from the so
 from engine.storage import Storage # Import the Storage class from the storage module in the engine package to manage persistent storage of game data and leaderboard records
 
 simulationGames = 1000000 # Define a constant for the number of games to be played during the simulation for performance testing and analysis
-simulationSeed = 1 # Define a constant for the random seed to ensure reproducibility of the simulation results by initializing the random number generator with a fixed value
-
+simulationSeed = 1 # Define a constant for the random seed to ensure reproducibility of the simulation results by starting the random number generator with a fixed value
 
 def menuOptions(settings): # A function that generates a list of menu options based on the provided settings dictionary. It returns a list of strings representing the available options for the user to choose from
     
@@ -24,7 +23,7 @@ def menuOptions(settings): # A function that generates a list of menu options ba
     options = ["Play a Game", "Session Leaderboard", "All-Time Leaderboard"] # Initialize the options list with default menu options for playing a game and viewing leaderboards
     
     if settings["bot_mode"]: # Check if bot mode is enabled in the settings dictionary
-        options.append("Watch a Bot Game") # If bot mode is enabled, add the option to watch a bot game to the options list
+        options.append("Watch a Bot Game") # If bot mode is enabled add the option to watch a bot game to the options list
     else: # If bot mode is disabled
         options.append("Bot mode is disabled in the config file. To enable it set 'bot_mode' to True in the config file.") # Add a message indicating that bot mode is disabled and instructions to enable it in the config file
     
@@ -40,7 +39,7 @@ def menuOptions(settings): # A function that generates a list of menu options ba
 
 def askValidInitials(screen): # A function that prompts the user to enter their initials and validates the input.
     
-    """This function prompts the user to enter their initials and validates the input. It ensures that the initials are between 1 and 3 characters long, consist of ASCII letters only and are not empty. If the input is valid it returns the initials in uppercase. If the user cancels the input it returns None."""
+    """This function prompts the user to enter their initials and validates the input. It ensures that the initials are between 1 and 3 characters long consist of ASCII letters only and are not empty. If the input is valid it returns the initials in uppercase. If the user cancels the input it returns None."""
     
     while True: # Start an infinite loop
         text = screen.getInitials() # Call the getInitials method of the screen object to prompt the user for their initials and store the input in the text variable
@@ -57,7 +56,7 @@ def askValidInitials(screen): # A function that prompts the user to enter their 
 
 def playHumanGame(screen, sessionBoard, allTimeBoard, settings, historyStorage, logStorage): # A function that manages the gameplay for a human player
     
-    """This function manages the gameplay for a human player. It creates a new game instance, plays a round of the game, collects the player's initials, creates a record of the game played, and updates the session and all-time leaderboards. It also handles saving leaderboard data and logging events related to the game played."""
+    """This function manages the gameplay for a human player. It creates a new game instance, plays a round of the game, collects the player's initials, creates a record of the game played and updates the session and all-time leaderboards. It also handles saving leaderboard data and logging events related to the game played."""
     
     currentGame = Game(attemptLimit = settings["attempt_limit"]) # Create a new instance of the Game class with the attempt limit specified in the settings dictionary
     turns = currentGame.playRound(screen) # Call the playRound method of the currentGame instance to start a round of the game and store the number of turns taken by the player in the turns variable
@@ -70,7 +69,7 @@ def playHumanGame(screen, sessionBoard, allTimeBoard, settings, historyStorage, 
     if initials is None: # Check if the player canceled the input for initials (initials is None)
         return # If the player canceled the input for initials return from the function without proceeding further
     
-    now = datetime.now().isoformat(timespec='seconds') # Get the current date and time in ISO 8601 format with seconds precision and store it in the now variable
+    now = datetime.now().isoformat(timespec='seconds') # Get the current date and time and store it in now variable
     record = makeRecord(initials, turns, now, "human") # Call the makeRecord function to create a record of the game played with the player's initials, number of turns taken, current date and time and the player type ("human") and store it in the record variable
     
     sessionBoard.addResult(record) # Call the addResult method of the sessionBoard instance to add the newly created record to the session leaderboard
@@ -157,7 +156,7 @@ def main(): # The main function that serves as the entry point for the guessing 
             runSortComparison(screen) # If the user selected option 6 and simulation mode is enabled call the runSortComparison function to measure the time taken by different sorting algorithms to sort leaderboard data of varying sizes and display the results to the user. Pass in the screen object to display the results
         elif choice == "7": # Check if the user selected option 7 to exit the program
             running = False # If the user selected option 7 set the running variable to False to exit the main menu loop and terminate the program
-        else: # If the user provided an invalid menu choice (not None, not 1-7, or not enabled based on settings)
+        else: # If the user provided an invalid menu choice (not None, not 1-7 or not enabled based on settings)
             screen.showError("Please pick an option from the menu.") # Display an error message to the user indicating that they need to pick a valid option from the menu and prompt them to retry
         
     screen.showLeaderboard(sessionBoard.getRanked(), "Session Leaderboard") # After the user chooses to exit the program display the session leaderboard one last time to show the final results of the session. The getRanked method of the sessionBoard instance is called to retrieve the ranked entries for the session leaderboard

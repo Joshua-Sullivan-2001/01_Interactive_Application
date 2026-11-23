@@ -1,20 +1,19 @@
 # storage.py: manages the storage of player turns taken and the leaderboard
 
 import json # Import the json module to handle reading and writing JSON data for storing player data and leaderboard information
-import os # Import the os module to interact with the operating system, such as checking for file existence and handling file paths
+import os # Import the os module to interact with the operating system such as checking for file existence and handling file paths
 from datetime import datetime # Import the datetime module to handle timestamps for when player data is recorded allowing for tracking of when turns were taken
 
 class Storage: # Define the Storage class to encapsulate methods for managing player data and leaderboard data
 
     """The base Storage class provides methods to manage the storage of player turns taken and leaderboard data. It handles reading from and writing to a JSON file ensuring that the data is persisted across game sessions. The class includes methods for loading turns taken, saving turns taken and managing the leaderboard."""
 
-    def __init__(self, filename = "leaderboard.json"): # Start the constructor method for the Storage class, initializing the filename for storing leaderboard data
+    def __init__(self, filename = "leaderboard.json"): # Start the constructor method for the Storage class initializing the filename for storing leaderboard data
         
-        """Start the Storage class with a filename for the leaderboard JSON file. If no filename is provided, it defaults to 'leaderboard.json'."""
+        """Start the Storage class with a filename for the leaderboard JSON file. If no filename is provided it defaults to 'leaderboard.json'."""
         
         self.filename = filename # Store the provided filename as an instance variable for later use in reading and writing data
         self.problems = [] # Initialize an empty list to hold any problems encountered during storage operations. This can be used for error handling or logging purposes
-        # TODO: Add file path later to ensure all data is stored in "guessing_engine/engine/data" folder
 
     def loadLeaderboardData(self): # Define the method to load player turns taken from the JSON file
         
@@ -45,8 +44,8 @@ class Storage: # Define the Storage class to encapsulate methods for managing pl
         good = [] # Initialize an empty list to hold valid player data entries
         for entry in data: # Iterate over each entry in the parsed data list
             if self.isGoodEntry(entry): # Check if the current entry is a valid player data entry using the isGoodEntry method
-                good.append(entry) # If the entry is valid, append it to the good list
-            else: # If the entry is not valid, it is ignored and not added to the good list
+                good.append(entry) # If the entry is valid append it to the good list
+            else: # If the entry is not valid it is ignored and not added to the good list
                 self.problems.append(f"Invalid entry: {entry}") # Append an error message to the problems list indicating that the entry is invalid
         return good # Return the list of valid player data entries that were successfully loaded from the JSON
     

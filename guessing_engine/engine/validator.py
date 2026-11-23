@@ -19,7 +19,7 @@ class validationResult: # The class to hold the result of the validation process
     """ A class to hold the result of the validation process including whether the input is valid, the value of the input and any error message. """
 
 
-    def __init__(self, ok, value, message): # The initial startup function for the validationResult class that takes in three parameters: ok, value, and message
+    def __init__(self, ok, value, message): # The initial startup function for the validationResult class that takes in three parameters: ok, value and message
         
         """ A function to create a validationResult object with the specified parameters."""
 
@@ -58,7 +58,7 @@ def validateGuess(inputText): # A function to validate the user's guess input en
 
     try: # Try block to convert the cleaned input to an integer
         value = int(cleanedInput) # Attempt to convert the input to an integer
-    except ValueError: # If the conversion fails, it's not a valid number
+    except ValueError: # If the conversion fails it's not a valid number
         return outputError(notANumberMessage) # Return an error message for non-numeric input
 
     if value < 0: # Check if the input is negative

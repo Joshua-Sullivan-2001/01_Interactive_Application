@@ -3,7 +3,7 @@
 from datetime import datetime # Import the datetime module to work with date and time for logging purposes
 from pathlib import Path # Import the Path class from the pathlib module to work with file paths for loading configuration and storage files
 import os # Import the os module to interact with the operating system for file and directory operations
-
+import sys # Import the sys module to access system-specific parameters and functions for checking if the script is running in a frozen state (e.g., packaged as an executable)
 from engine.bot import binaryBot, randomBot # Import the binaryBot and randomBot classes from the bot module in the engine package to create bot instances for gameplay
 from engine.config import loadConfig # Import the loadConfig function from the config module in the engine package to load configuration settings for the application
 from engine.display import createDisplay # Import the createDisplay function from the display module in the engine package to create a display object for user interface
@@ -116,7 +116,10 @@ def main(): # The main function that serves as the entry point for the guessing 
     
     """The main function serves as the entry point for the guessing engine application. It loads configuration settings, initializes display and storage objects, manages the main menu loop and handles user interactions for playing games, viewing leaderboards, running simulations and comparing sorting algorithms."""
     
-    os.chdir(Path(__file__).resolve().parent) # Change the current working directory to the directory where the main.py file is located to ensure that relative file paths for configuration and storage files are resolved correctly
+    if getattr(sys, "frozen", False): # Check if the script is running in a frozen state (e.g., packaged as an executable using PyInstaller) to change the current working directory to the directory containing the executable for proper file access
+        os.chdir(Path(sys.executable).parent)  # Change the current working directory to the directory containing the executable for proper file access when running in a frozen state
+    else:  # If the script is not running in a frozen state (e.g., running as a regular Python script) change the current working directory to the directory containing the main.py file for proper file access
+        os.chdir(Path(__file__).resolve().parent) # Change the current working directory to the directory containing the main.py file for proper file access when running as a regular Python script
     
     settings, problems = loadConfig("config.json") # Load configuration settings and problems from the config.json file using the loadConfig function and store them in the settings and problems variables respectively
     screen = createDisplay("rich" if settings["use_rich"] else "basic") # Create a display object for user interface based on the use_rich setting in the settings dictionary. If use_rich is True create a rich display; otherwise create a basic display and store it in the screen variable

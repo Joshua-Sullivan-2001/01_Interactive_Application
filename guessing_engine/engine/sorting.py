@@ -36,7 +36,6 @@ class insertionSorter(Sorter): # A subclass of Sorter that implements the insert
         
         return result # Return the sorted list after all elements have been processed and inserted into their correct positions
 
-
 # Merge Sort
 
 class mergeSorter(Sorter): # A subclass of Sorter that implements the merge sort

@@ -1,7 +1,6 @@
 # game.py: judges player guesses against a secret number and runs one round
 
 import random # Import the random module to generate a secret number
-
 from engine.validator import minValue, maxValue, validateGuess # Import the number range and the validator function from the validator module
 
 # Constants for the game
